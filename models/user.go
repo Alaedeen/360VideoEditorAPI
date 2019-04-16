@@ -22,4 +22,5 @@ type User struct {
 	JoiningMonth 	string	`json:"joiningMonth"`
 	JoiningYear 	int		`json:"joiningYear"`
 	Subscribers 	int		`json:"subscribers"`
+	Videos			[]Video
 }
