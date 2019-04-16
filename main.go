@@ -38,7 +38,8 @@ func main()  {
 	DataBase :=  configuration.Database.DataBase
 	Charset :=  configuration.Database.Charset
 	ParseTime :=  configuration.Database.ParseTime
-	db, err := gorm.Open("mysql", UserName+":"+Password+"@/"+DataBase+"?charset="+Charset+"&parseTime="+ParseTime+"&loc=Local")
+	db, err := gorm.Open("mysql", UserName+":"+Password+"@/"+DataBase+"?charset=" +
+										Charset+"&parseTime="+ParseTime+"&loc=Local")
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -54,12 +55,17 @@ func main()  {
 					&models.User{},&models.Video{},
 					&models.Video2D{},&models.VideosDislikes{},
 					&models.VideosLikes{})
-	repo := repository.UserRepo{db}
-	handler := handlers.UserHandler{&repo}
+
+	userRepo := repository.UserRepo{db}
+	userHandler := handlers.UserHandler{&userRepo}
+	videoRepo := repository.VideoRepo{db}
+	videoHandler := handlers.VideoHandler{&videoRepo}
 	// Init Router 
 	r := mux.NewRouter()
-	routerHandler := router.UserRouterHandler{Router: r,Handler: handler}
-	routerHandler.HandleFunctions()
+	UserRouterHandler := router.UserRouterHandler{Router: r,Handler: userHandler}
+	UserRouterHandler.HandleFunctions()
+	VideoRouterHandler := router.VideoRouterHandler{Router: r,Handler: videoHandler}
+	VideoRouterHandler.HandleFunctions()
 	// start server
 	port := ":" + strconv.Itoa(configuration.Server.Port) 
 	log.Fatal(http.ListenAndServe(port,r))

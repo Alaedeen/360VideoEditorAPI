@@ -98,3 +98,19 @@ func (h *UserHandler) DeleteUser(w http.ResponseWriter, r *http.Request)  {
 	}
 	json.NewEncoder(w).Encode(Users)
 }
+
+// GetUserVideos ...
+func (h *UserHandler) GetUserVideos(w http.ResponseWriter, r *http.Request)  {
+	w.Header().Set("Content-Type", "application/json")
+	params := r.URL.Query()["id"]
+	var User models.User
+	var Videos []models.Video
+	id,_ := strconv.Atoi(params[0])//error handling
+	User.ID = uint(id)
+	result,_ := h.Repo.GetUserVideos(User,Videos)
+	
+	json.NewEncoder(w).Encode(result)
+
+	
+	
+}

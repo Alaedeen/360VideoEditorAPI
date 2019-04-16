@@ -4,7 +4,7 @@ import (
 	handlers "github.com/Alaedeen/360VideoEditorAPI/handlers"
 )
 
-// RouterHandler ...
+// UserRouterHandler ...
 type UserRouterHandler struct {
 	Router *mux.Router
 	Handler handlers.UserHandler  
@@ -14,7 +14,8 @@ type UserRouterHandler struct {
 func (r *UserRouterHandler) HandleFunctions() {
 	// Route Handlers / Endpoints  
 	r.Router.HandleFunc("/api/v1/users", r.Handler.GetUsers).Methods("GET")
-	r.Router.HandleFunc("/api/v1/users/{id}", r.Handler.GetUser).Methods("GET")
+	r.Router.HandleFunc("/api/v1/user", r.Handler.GetUser).Methods("GET")
+	r.Router.HandleFunc("/api/v1/user/videos", r.Handler.GetUserVideos).Methods("GET")
 	r.Router.HandleFunc("/api/v1/users", r.Handler.CreateUser).Methods("POST")
 	r.Router.HandleFunc("/api/v1/users/{id}", r.Handler.UpdateUser).Methods("PUT") 
 	r.Router.HandleFunc("/api/v1/users/{id}", r.Handler.DeleteUser).Methods("DELETE")
