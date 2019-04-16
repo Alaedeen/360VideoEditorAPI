@@ -1,0 +1,9 @@
+database:
+  UserName:	"root"
+  Password:	"Alaedeen"
+  DataBase:	"VideoEditor"
+  Charset:	"utf8"
+  ParseTime: "True"
+
+server:
+  port: 8000
