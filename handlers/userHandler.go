@@ -84,14 +84,34 @@ func (h *UserHandler) CreateUser(w http.ResponseWriter, r *http.Request)  {
 	json.NewEncoder(w).Encode(response)
 }
 
-// UpdateUser ...
-func (h *UserHandler) UpdateUser(w http.ResponseWriter, r *http.Request)  {
-	w.Header().Set("Content-Type", "application/json")
-	
-}
-
 // DeleteUser ...
 func (h *UserHandler) DeleteUser(w http.ResponseWriter, r *http.Request)  {
+	w.Header().Set("Content-Type", "application/json")
+	params := r.URL.Query()["id"]
+	var response models.Response
+	id, err := strconv.Atoi(params[0])
+
+	if err != nil {
+		response.Code = 500
+		response.Status= "INTERNAL SERVER ERROR"
+		response.Data= err.Error()
+	}else{
+		err := h.Repo.DeleteUser(uint(id))
+		if err!=nil {
+			response.Code = 404
+			response.Status= "NOT FOUND"
+			response.Data= err.Error()
+		}else{
+			response.Code = 200
+			response.Status= "OK"
+			response.Data= "USER DELETED"
+		}
+	}
+	json.NewEncoder(w).Encode(response)
+}
+
+// UpdateUser ...
+func (h *UserHandler) UpdateUser(w http.ResponseWriter, r *http.Request)  {
 	w.Header().Set("Content-Type", "application/json")
 	
 }
