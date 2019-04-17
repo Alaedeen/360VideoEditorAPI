@@ -7,8 +7,8 @@ import (
 
 // UserRepository ...
 type UserRepository interface {
-	GetUsers(u []models.User) ([]models.User, error)
-	GetUser(u models.User ,id uint) (models.User, error)
+	GetUsers() ([]models.User, error)
+	GetUser(id uint) (models.User, error)
 	CreateUser( u models.User) (models.User, error)
 	DeleteUser(id uint)(error)
 	UpdateUser(u models.User,id uint)(error)
@@ -23,17 +23,17 @@ type UserRepo struct {
 
 
 // GetUsers ...
-func (r *UserRepo) GetUsers(u []models.User) ([]models.User, error){
-	 Users := u
+func (r *UserRepo) GetUsers() ([]models.User, error){
+	 var Users []models.User
 
-	err:=r.Db.Find(&Users).Error
+	err:=r.Db.Model(&models.User{}).Find(&Users).Error
 	
 	return Users, err
 }
 
 // GetUser ...
-func (r *UserRepo) GetUser(u models.User , id uint) (models.User, error){
-	User :=u
+func (r *UserRepo) GetUser( id uint) (models.User, error){
+	var User models.User
 	subscriptions := []models.Subscriptions{}
 	videosLikes := []models.VideosLikes{}
 	videosDislikes := []models.VideosDislikes{}
@@ -75,7 +75,7 @@ func (r *UserRepo) DeleteUser(id uint)(error){
 		return err
 	}else{
 		user.ID=id
-		err :=r.Db.Unscoped().Delete(&user).Error
+		err :=r.Db.Delete(&user).Error
 		return err
 	}
 	

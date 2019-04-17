@@ -13,23 +13,25 @@ type UserHandler struct {
 	Repo repository.UserRepository
 }
 
+func responseFormatter (code int, status string, data interface{}, response *models.Response) {
+	response.Code = code
+	response.Status = status
+	response.Data=data
+}
+
 
 
 // GetUsers ...
 func (h *UserHandler) GetUsers(w http.ResponseWriter, r *http.Request)  {
 	w.Header().Set("Content-Type", "application/json")
-	var Users []models.User
 	var response models.Response
-	result,err := h.Repo.GetUsers(Users) 
-	if err ==nil {
-		response.Code = 200
-		response.Status= "OK"
-		response.Data= result
-	}else{
-		response.Code = 500
-		response.Status= "INTERNAL SERVER ERROR"
-		response.Data= err.Error()
+	result,err := h.Repo.GetUsers() 
+	if err !=nil {
+		responseFormatter(500,"INTERNAL SERVER ERROR",err.Error(),&response)
+		json.NewEncoder(w).Encode(response)
+		return
 	}
+	responseFormatter(200,"OK",result,&response)
 	json.NewEncoder(w).Encode(response)
 }
 
@@ -37,25 +39,20 @@ func (h *UserHandler) GetUsers(w http.ResponseWriter, r *http.Request)  {
 func (h *UserHandler) GetUser(w http.ResponseWriter, r *http.Request)  {
 	w.Header().Set("Content-Type", "application/json")
 	params := r.URL.Query()["id"]
-	var User models.User
 	var response models.Response
 	id, err := strconv.Atoi(params[0])
 	if err!= nil {
-		response.Code = 500
-		response.Status= "INTERNAL SERVER ERROR"
-		response.Data= err.Error()
-	}else{
-		result,err := h.Repo.GetUser(User , uint(id))
-		if err!=nil {
-			response.Code = 404
-			response.Status= "NOT FOUND"
-			response.Data= err.Error()
-		}else{
-			response.Code = 200
-			response.Status= "OK"
-			response.Data= result
-		}
+		responseFormatter(500,"INTERNAL SERVER ERROR",err.Error(),&response)
+		json.NewEncoder(w).Encode(response)
+		return
 	}
+	result,err1 := h.Repo.GetUser(uint(id))
+	if err1!=nil {
+		responseFormatter(404,"NOT FOUND",err.Error(),&response)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+	responseFormatter(200,"OK",result,&response)
 	json.NewEncoder(w).Encode(response)
 }
 
@@ -66,21 +63,17 @@ func (h *UserHandler) CreateUser(w http.ResponseWriter, r *http.Request)  {
 	var response models.Response
 	err:=json.NewDecoder(r.Body).Decode(&User)
 	if err != nil {
-		response.Code = 400
-		response.Status= "BAD REQUEST"
-		response.Data= err.Error()
-	}else {
-		result,err := h.Repo.CreateUser(User)
-		if err != nil {
-			response.Code = 500
-			response.Status= "INTERNAL SERVER ERROR"
-			response.Data= err.Error()
-		}else{
-			response.Code = 201
-			response.Status= "CREATED"
-			response.Data= result
-		}
+		responseFormatter(400,"BAD REQUEST",err.Error(),&response)
+		json.NewEncoder(w).Encode(response)
+		return
 	}
+	result,err1 := h.Repo.CreateUser(User)
+	if err1 != nil {
+		responseFormatter(500,"INTERNAL SERVER ERROR",err.Error(),&response)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+	responseFormatter(201,"CREATED",result.Name+" Created",&response)
 	json.NewEncoder(w).Encode(response)
 }
 
@@ -92,21 +85,17 @@ func (h *UserHandler) DeleteUser(w http.ResponseWriter, r *http.Request)  {
 	id, err := strconv.Atoi(params[0])
 
 	if err != nil {
-		response.Code = 500
-		response.Status= "INTERNAL SERVER ERROR"
-		response.Data= err.Error()
-	}else{
-		err := h.Repo.DeleteUser(uint(id))
-		if err!=nil {
-			response.Code = 404
-			response.Status= "NOT FOUND"
-			response.Data= err.Error()
-		}else{
-			response.Code = 200
-			response.Status= "OK"
-			response.Data= "USER DELETED"
-		}
+		responseFormatter(500,"INTERNAL SERVER ERROR",err.Error(),&response)
+		json.NewEncoder(w).Encode(response)
+		return
 	}
+	err1 := h.Repo.DeleteUser(uint(id))
+	if err1!=nil {
+		responseFormatter(404,"NOT FOUND",err.Error(),&response)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+	responseFormatter(200,"OK","USER DELETED",&response)
 	json.NewEncoder(w).Encode(response)
 }
 
@@ -118,29 +107,24 @@ func (h *UserHandler) UpdateUser(w http.ResponseWriter, r *http.Request)  {
 	var response models.Response
 	err:=json.NewDecoder(r.Body).Decode(&User)
 	if err != nil {
-		response.Code = 400
-		response.Status= "BAD REQUEST"
-		response.Data= err.Error()
+		responseFormatter(400,"BAD REQUEST",err.Error(),&response)
+		json.NewEncoder(w).Encode(response)
 		return
 	} 
 	id, err1 := strconv.Atoi(params[0])
 	if err1 != nil {
-		response.Code = 500
-		response.Status= "INTERNAL SERVER ERROR"
-		response.Data= err.Error()
+		responseFormatter(500,"INTERNAL SERVER ERROR",err.Error(),&response)
+		json.NewEncoder(w).Encode(response)
 		return
 	}
 	err2 := h.Repo.UpdateUser(User,uint(id))
 	if err2 !=nil {
-		response.Code = 404
-		response.Status= "NOT FOUND"
-		response.Data= err.Error()
+		responseFormatter(404,"NOT FOUND",err.Error(),&response)
+		json.NewEncoder(w).Encode(response)
 		return
 	}
-	response.Code = 200
-	response.Status= "OK"
-	response.Data= User
-
+	
+	responseFormatter(200,"OK",User,&response)
 	json.NewEncoder(w).Encode(response)
 }
 
@@ -156,6 +140,6 @@ func (h *UserHandler) GetUserVideos(w http.ResponseWriter, r *http.Request)  {
 	
 	json.NewEncoder(w).Encode(result)
 
-	
+	//Start Here ************!!!!!!!!!!!!!!
 	
 }
