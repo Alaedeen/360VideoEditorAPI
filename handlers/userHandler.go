@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"encoding/json"
 	"net/http"
 	"strconv"
@@ -20,24 +21,16 @@ func (h *UserHandler) GetUsers(w http.ResponseWriter, r *http.Request)  {
 	w.Header().Set("Content-Type", "application/json")
 	var Users []models.User
 	var response models.Response
-	role := r.URL.Query()["role"][0]
-	if role=="admin" {
-		result,err := h.Repo.GetUsers(Users) 
-		if err ==nil {
-			response.Code = 200
-			response.Status= "OK"
-			response.Data= result
-		}else{
-			response.Code = 500
-			response.Status= "INTERNAL SERVER ERROR"
-			response.Data= nil
-		}
+	result,err := h.Repo.GetUsers(Users) 
+	if err ==nil {
+		response.Code = 200
+		response.Status= "OK"
+		response.Data= result
 	}else{
-		response.Code = 401
-		response.Status= "UNAUTHORIZED"
+		response.Code = 500
+		response.Status= "INTERNAL SERVER ERROR"
 		response.Data= nil
 	}
-	
 	json.NewEncoder(w).Encode(response)
 }
 
@@ -64,15 +57,15 @@ func (h *UserHandler) GetUser(w http.ResponseWriter, r *http.Request)  {
 			response.Data= result
 		}
 	}
-	
 	json.NewEncoder(w).Encode(response)
 }
 
 // CreateUser ...
 func (h *UserHandler) CreateUser(w http.ResponseWriter, r *http.Request)  {
 	w.Header().Set("Content-Type", "application/json")
-	// var User models.User
-	// err:=json.NewDecoder(r.Body).Decode(&User)
+	var User models.User
+	err:=json.NewDecoder(r.Body).Decode(&User)
+	fmt.Println(User ,err)
 	
 }
 
