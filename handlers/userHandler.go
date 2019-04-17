@@ -113,7 +113,35 @@ func (h *UserHandler) DeleteUser(w http.ResponseWriter, r *http.Request)  {
 // UpdateUser ...
 func (h *UserHandler) UpdateUser(w http.ResponseWriter, r *http.Request)  {
 	w.Header().Set("Content-Type", "application/json")
-	
+	params := r.URL.Query()["id"]
+	var User models.User
+	var response models.Response
+	err:=json.NewDecoder(r.Body).Decode(&User)
+	if err != nil {
+		response.Code = 400
+		response.Status= "BAD REQUEST"
+		response.Data= err.Error()
+		return
+	} 
+	id, err1 := strconv.Atoi(params[0])
+	if err1 != nil {
+		response.Code = 500
+		response.Status= "INTERNAL SERVER ERROR"
+		response.Data= err.Error()
+		return
+	}
+	err2 := h.Repo.UpdateUser(User,uint(id))
+	if err2 !=nil {
+		response.Code = 404
+		response.Status= "NOT FOUND"
+		response.Data= err.Error()
+		return
+	}
+	response.Code = 200
+	response.Status= "OK"
+	response.Data= User
+
+	json.NewEncoder(w).Encode(response)
 }
 
 // GetUserVideos ...
