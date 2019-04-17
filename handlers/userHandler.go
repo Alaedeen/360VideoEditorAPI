@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"fmt"
 	"encoding/json"
 	"net/http"
 	"strconv"
@@ -29,7 +28,7 @@ func (h *UserHandler) GetUsers(w http.ResponseWriter, r *http.Request)  {
 	}else{
 		response.Code = 500
 		response.Status= "INTERNAL SERVER ERROR"
-		response.Data= nil
+		response.Data= err.Error()
 	}
 	json.NewEncoder(w).Encode(response)
 }
@@ -44,13 +43,13 @@ func (h *UserHandler) GetUser(w http.ResponseWriter, r *http.Request)  {
 	if err!= nil {
 		response.Code = 500
 		response.Status= "INTERNAL SERVER ERROR"
-		response.Data= nil
+		response.Data= err.Error()
 	}else{
 		result,err := h.Repo.GetUser(User , uint(id))
 		if err!=nil {
 			response.Code = 404
 			response.Status= "NOT FOUND"
-			response.Data= nil
+			response.Data= err.Error()
 		}else{
 			response.Code = 200
 			response.Status= "OK"
@@ -64,9 +63,25 @@ func (h *UserHandler) GetUser(w http.ResponseWriter, r *http.Request)  {
 func (h *UserHandler) CreateUser(w http.ResponseWriter, r *http.Request)  {
 	w.Header().Set("Content-Type", "application/json")
 	var User models.User
+	var response models.Response
 	err:=json.NewDecoder(r.Body).Decode(&User)
-	fmt.Println(User ,err)
-	
+	if err != nil {
+		response.Code = 400
+		response.Status= "BAD REQUEST"
+		response.Data= err.Error()
+	}else {
+		result,err := h.Repo.CreateUser(User)
+		if err != nil {
+			response.Code = 500
+			response.Status= "INTERNAL SERVER ERROR"
+			response.Data= err.Error()
+		}else{
+			response.Code = 201
+			response.Status= "CREATED"
+			response.Data= result
+		}
+	}
+	json.NewEncoder(w).Encode(response)
 }
 
 // UpdateUser ...

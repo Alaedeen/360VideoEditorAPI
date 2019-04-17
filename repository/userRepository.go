@@ -61,8 +61,8 @@ func (r *UserRepo) GetUser(u models.User , id uint) (models.User, error){
 }
 
 // CreateUser ...
-func (r *UserRepo) CreateUser(b models.User) (models.User, error){
-	User :=b
+func (r *UserRepo) CreateUser(u models.User) (models.User, error){
+	User :=u
 	err :=r.Db.Create(&User).Error
 	return User, err
 }
