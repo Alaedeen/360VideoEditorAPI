@@ -8,7 +8,7 @@ import (
 // UserRepository ...
 type UserRepository interface {
 	GetUsers(u []models.User) ([]models.User, error)
-	GetUser(id int, u models.User) (models.User, error)
+	GetUser(u models.User ,id uint) (models.User, error)
 	CreateUser( u models.User) (models.User, error)
 	DeleteUser()
 	UpdateUser()
@@ -20,27 +20,22 @@ type UserRepo struct {
 	Db *gorm.DB
 }
 
-// Result Struct)
-type Result struct {
-	ID 			uint
-	Isbn		string `json:"isbn"`
-	Title		string `json:"title"`
-}
+
 
 // GetUsers ...
 func (r *UserRepo) GetUsers(u []models.User) ([]models.User, error){
 	 Users := u
 
-	r.Db.Find(&Users)
+	err:=r.Db.Find(&Users).Error
 	
-	return Users, nil
+	return Users, err
 }
 
 // GetUser ...
-func (r *UserRepo) GetUser(id int, b models.User) (models.User, error){
-	User :=b
+func (r *UserRepo) GetUser(u models.User , id uint) (models.User, error){
+	User :=u
 
-	err := r.Db.Where("id = ?", uint(id)).First(&User).Error
+	err := r.Db.First(&User,id).Error
 
 	return User,err
 }
