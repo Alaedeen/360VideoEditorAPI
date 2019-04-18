@@ -15,6 +15,7 @@ func (r *UserRouterHandler) HandleFunctions() {
 	// Route Handlers / Endpoints  
 	r.Router.HandleFunc("/api/v1/users", r.Handler.GetUsers).Methods("GET")
 	r.Router.HandleFunc("/api/v1/user", r.Handler.GetUser).Methods("GET")
+	r.Router.HandleFunc("/api/v1/userby", r.Handler.GetUserBy).Methods("GET")
 	r.Router.HandleFunc("/api/v1/user/videos", r.Handler.GetUserVideos).Methods("GET")
 	r.Router.HandleFunc("/api/v1/users", r.Handler.CreateUser).Methods("POST")
 	r.Router.HandleFunc("/api/v1/users", r.Handler.UpdateUser).Methods("PUT") 

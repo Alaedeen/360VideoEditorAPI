@@ -9,6 +9,7 @@ import (
 type UserRepository interface {
 	GetUsers() ([]models.User, error)
 	GetUser(id uint) (models.User, error)
+	GetUserBy(keys []string, values []interface{}) (models.User, error)
 	CreateUser( u models.User) (models.User, error)
 	DeleteUser(id uint)(error)
 	UpdateUser(u models.User,id uint)(error)
@@ -57,6 +58,18 @@ func (r *UserRepo) GetUser( id uint) (models.User, error){
 	User.RepliesLikes=repliesLikes
 	User.RepliesDislikes=repliesDislikes
 
+	return User,err
+}
+
+// GetUserBy ...
+func (r *UserRepo) GetUserBy(keys []string, values []interface{}) (models.User, error){
+	var User models.User
+	var m map[string]interface{}
+	m = make(map[string]interface{})
+	for index,value := range keys{
+		m[value] = values[index]
+	}
+	err := r.Db.Where(m).Find(&User).Error
 	return User,err
 }
 

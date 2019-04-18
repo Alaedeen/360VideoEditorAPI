@@ -56,6 +56,33 @@ func (h *UserHandler) GetUser(w http.ResponseWriter, r *http.Request)  {
 	json.NewEncoder(w).Encode(response)
 }
 
+// GetUserBy ...
+func (h *UserHandler) GetUserBy(w http.ResponseWriter, r *http.Request){
+	w.Header().Set("Content-Type", "application/json")
+	params:= r.URL.Query()
+	var keys []string
+	var values []interface{}
+	var response models.Response
+	for key,value := range params {
+		keys = append(keys,key)
+		val , err := strconv.Atoi(value[0])
+		if err != nil {
+			values = append(values, value[0])
+		}else{
+			values = append(values, uint(val))
+		}
+
+	}
+	result,err:= h.Repo.GetUserBy(keys,values)
+	if err != nil {
+		responseFormatter(404,"NOT FOUND",err.Error(),&response)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+	responseFormatter(200,"OK",result,&response)
+	json.NewEncoder(w).Encode(response)
+}
+
 // CreateUser ...
 func (h *UserHandler) CreateUser(w http.ResponseWriter, r *http.Request)  {
 	w.Header().Set("Content-Type", "application/json")
