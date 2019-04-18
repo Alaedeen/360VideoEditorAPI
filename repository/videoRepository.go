@@ -9,7 +9,7 @@ import (
 type VideoRepository interface {
 	GetVideos() ([]models.Video, error)
 	GetVideo(id uint) (models.Video, error)
-	CreateVideo( v models.Video) (models.Video, error)
+	AddVideo( v models.Video) (models.Video, error)
 	DeleteVideo()
 }
 
@@ -50,8 +50,8 @@ func (r *VideoRepo) GetVideo(id uint ) (models.Video, error){
 	return Video,err
 }
 
-// CreateVideo ...
-func (r *VideoRepo) CreateVideo(b models.Video) (models.Video, error){
+// AddVideo ...
+func (r *VideoRepo) AddVideo(b models.Video) (models.Video, error){
 	Video :=b
 	err :=r.Db.Create(&Video).Error
 	return Video, err

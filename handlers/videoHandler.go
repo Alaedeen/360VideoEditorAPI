@@ -3,10 +3,8 @@ package handlers
 import (
 	"encoding/json"
 	"net/http"
-	"math/rand"
 	"strconv"
 	"github.com/gorilla/mux"
-	"fmt"
 	models "github.com/Alaedeen/360VideoEditorAPI/models"
 	"github.com/Alaedeen/360VideoEditorAPI/repository"
 )
@@ -50,27 +48,29 @@ func (h *VideoHandler) GetVideo(w http.ResponseWriter, r *http.Request)  {
 		return
 	}
 	responseFormatter(200,"OK",result,&response)
-	json.NewEncoder(w).Encode(response)
-	
-
-	
+	json.NewEncoder(w).Encode(response)	
 }
 
 // AddVideo ...
 func (h *VideoHandler) AddVideo(w http.ResponseWriter, r *http.Request)  {
 	w.Header().Set("Content-Type", "application/json")
 	var Video models.Video
+	var response models.Response
 	err:=json.NewDecoder(r.Body).Decode(&Video)
 	if err !=nil {
-		fmt.Println(err)
+		responseFormatter(400,"BAD REQUEST",err.Error(),&response)
+		json.NewEncoder(w).Encode(response)
+		return
 	}
-	Video.ID =uint(rand.Intn(1000000))
-	result, err1:= h.Repo.CreateVideo(Video)
+	result, err1:= h.Repo.AddVideo(Video)
 	if err1!=nil{
-		json.NewEncoder(w).Encode(err1)
-	}else {
-		json.NewEncoder(w).Encode(result)
-	}	
+		responseFormatter(500,"INTERNAL SERVER ERROR",err1.Error(),&response)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+	responseFormatter(201,"CREATED",result.Title+" Added",&response)
+	json.NewEncoder(w).Encode(response)
+
 }
 
 
