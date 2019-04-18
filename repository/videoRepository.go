@@ -10,7 +10,7 @@ type VideoRepository interface {
 	GetVideos() ([]models.Video, error)
 	GetVideo(id uint) (models.Video, error)
 	AddVideo( v models.Video) (models.Video, error)
-	DeleteVideo()
+	DeleteVideo(id uint)(error)
 }
 
 // VideoRepo ...
@@ -58,6 +58,14 @@ func (r *VideoRepo) AddVideo(b models.Video) (models.Video, error){
 }
 
 // DeleteVideo ...
-func (r *VideoRepo) DeleteVideo(){
-
+func (r *VideoRepo) DeleteVideo(id uint)(error){
+	video := models.Video{}
+	err := r.Db.First(&video,id).Error
+	if err != nil {
+		return err
+	}
+	
+	video.ID=id
+	err =r.Db.Delete(&video).Error
+	return err
 }

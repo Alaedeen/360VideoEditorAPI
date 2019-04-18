@@ -86,11 +86,11 @@ func (r *UserRepo) DeleteUser(id uint)(error){
 	err := r.Db.First(&user,id).Error
 	if err != nil {
 		return err
-	}else{
-		user.ID=id
-		err :=r.Db.Delete(&user).Error
-		return err
 	}
+	
+	user.ID=id
+	err =r.Db.Delete(&user).Error
+	return err
 	
 }
 

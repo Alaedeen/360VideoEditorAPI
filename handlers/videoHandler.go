@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"net/http"
 	"strconv"
-	"github.com/gorilla/mux"
 	models "github.com/Alaedeen/360VideoEditorAPI/models"
 	"github.com/Alaedeen/360VideoEditorAPI/repository"
 )
@@ -77,14 +76,20 @@ func (h *VideoHandler) AddVideo(w http.ResponseWriter, r *http.Request)  {
 // DeleteVideo ...
 func (h *VideoHandler) DeleteVideo(w http.ResponseWriter, r *http.Request)  {
 	w.Header().Set("Content-Type", "application/json")
-	params := mux.Vars(r)
-	var Videos []models.Video
-	id, _ := strconv.Atoi(params["id"])
-	for index, item := range Videos {
-		if item.ID ==  uint(id) {
-			Videos = append(Videos[:index], Videos[index+1:]...)
-			break
-		}
+	var response models.Response
+	params := r.URL.Query() //Get params
+	id, err := strconv.Atoi(params["id"][0]) 
+	if err != nil {
+		responseFormatter(500,"INTERNAL SERVER ERROR",err.Error(),&response)
+		json.NewEncoder(w).Encode(response)
+		return
 	}
-	json.NewEncoder(w).Encode(Videos)
+	err1 := h.Repo.DeleteVideo(uint(id))
+	if err1!=nil {
+		responseFormatter(404,"NOT FOUND",err1.Error(),&response)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+	responseFormatter(200,"OK","Video DELETED",&response)
+	json.NewEncoder(w).Encode(response)
 }
