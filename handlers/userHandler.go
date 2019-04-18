@@ -48,7 +48,7 @@ func (h *UserHandler) GetUser(w http.ResponseWriter, r *http.Request)  {
 	}
 	result,err1 := h.Repo.GetUser(uint(id))
 	if err1!=nil {
-		responseFormatter(404,"NOT FOUND",err.Error(),&response)
+		responseFormatter(404,"NOT FOUND",err1.Error(),&response)
 		json.NewEncoder(w).Encode(response)
 		return
 	}
@@ -71,7 +71,6 @@ func (h *UserHandler) GetUserBy(w http.ResponseWriter, r *http.Request){
 		}else{
 			values = append(values, uint(val))
 		}
-
 	}
 	result,err:= h.Repo.GetUserBy(keys,values)
 	if err != nil {
@@ -96,7 +95,7 @@ func (h *UserHandler) CreateUser(w http.ResponseWriter, r *http.Request)  {
 	}
 	result,err1 := h.Repo.CreateUser(User)
 	if err1 != nil {
-		responseFormatter(500,"INTERNAL SERVER ERROR",err.Error(),&response)
+		responseFormatter(500,"INTERNAL SERVER ERROR",err1.Error(),&response)
 		json.NewEncoder(w).Encode(response)
 		return
 	}
@@ -118,7 +117,7 @@ func (h *UserHandler) DeleteUser(w http.ResponseWriter, r *http.Request)  {
 	}
 	err1 := h.Repo.DeleteUser(uint(id))
 	if err1!=nil {
-		responseFormatter(404,"NOT FOUND",err.Error(),&response)
+		responseFormatter(404,"NOT FOUND",err1.Error(),&response)
 		json.NewEncoder(w).Encode(response)
 		return
 	}
@@ -140,13 +139,13 @@ func (h *UserHandler) UpdateUser(w http.ResponseWriter, r *http.Request)  {
 	} 
 	id, err1 := strconv.Atoi(params[0])
 	if err1 != nil {
-		responseFormatter(500,"INTERNAL SERVER ERROR",err.Error(),&response)
+		responseFormatter(500,"INTERNAL SERVER ERROR",err1.Error(),&response)
 		json.NewEncoder(w).Encode(response)
 		return
 	}
 	err2 := h.Repo.UpdateUser(User,uint(id))
 	if err2 !=nil {
-		responseFormatter(404,"NOT FOUND",err.Error(),&response)
+		responseFormatter(404,"NOT FOUND",err2.Error(),&response)
 		json.NewEncoder(w).Encode(response)
 		return
 	}
@@ -160,13 +159,20 @@ func (h *UserHandler) GetUserVideos(w http.ResponseWriter, r *http.Request)  {
 	w.Header().Set("Content-Type", "application/json")
 	params := r.URL.Query()["id"]
 	var User models.User
-	var Videos []models.Video
-	id,_ := strconv.Atoi(params[0])//error handling
+	var response models.Response
+	id,err := strconv.Atoi(params[0])//error handling
+	if err != nil {
+		responseFormatter(500,"INTERNAL SERVER ERROR",err.Error(),&response)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
 	User.ID = uint(id)
-	result,_ := h.Repo.GetUserVideos(User,Videos)
-	
-	json.NewEncoder(w).Encode(result)
-
-	//Start Here ************!!!!!!!!!!!!!!
-	
+	result,err1 := h.Repo.GetUserVideos(User)
+	if err1 !=nil {
+		responseFormatter(404,"NOT FOUND",err1.Error(),&response)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+	responseFormatter(200,"OK",result,&response)
+	json.NewEncoder(w).Encode(response)
 }

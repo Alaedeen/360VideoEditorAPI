@@ -13,7 +13,7 @@ type UserRepository interface {
 	CreateUser( u models.User) (models.User, error)
 	DeleteUser(id uint)(error)
 	UpdateUser(u models.User,id uint)(error)
-	GetUserVideos(u models.User, v []models.Video ) ([]models.Video, error)
+	GetUserVideos(u models.User) ([]models.Video, error)
 }
 
 // UserRepo ...
@@ -108,9 +108,9 @@ func (r *UserRepo) UpdateUser(u models.User,id uint)(error){
 }
 
 // GetUserVideos ...
-func (r *UserRepo) GetUserVideos(u models.User, v []models.Video )([]models.Video, error){
+func (r *UserRepo) GetUserVideos(u models.User)([]models.Video, error){
 	user := u
-	video := v
-	err:=r.Db.Model(&user).Related(&video).Error
-	return video,err
+	videos := []models.Video{}
+	err:=r.Db.Model(&user).Related(&videos).Error
+	return videos,err
 }
