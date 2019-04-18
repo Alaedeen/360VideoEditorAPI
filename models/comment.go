@@ -17,4 +17,5 @@ type Comment struct {
 	Year 			int		`json:"year"`
 	Likes 			int		`json:"likes"`
 	Dislikes 		int		`json:"dislikes"`
+	Replies			[]Reply	`json:"replies"`
 }

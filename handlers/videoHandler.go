@@ -21,25 +21,37 @@ type VideoHandler struct {
 // GetVideos ...
 func (h *VideoHandler) GetVideos(w http.ResponseWriter, r *http.Request)  {
 	w.Header().Set("Content-Type", "application/json")
-	var Videos []models.Video
-	result,_ := h.Repo.GetVideos(Videos) 
-	json.NewEncoder(w).Encode(result)
+	var response models.Response
+	result,err := h.Repo.GetVideos() 
+	if err !=nil {
+		responseFormatter(500,"INTERNAL SERVER ERROR",err.Error(),&response)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+	responseFormatter(200,"OK",result,&response)
+	json.NewEncoder(w).Encode(response)
 }
 
 // GetVideo ...
 func (h *VideoHandler) GetVideo(w http.ResponseWriter, r *http.Request)  {
 	w.Header().Set("Content-Type", "application/json")
-	params := mux.Vars(r) //Get params
-	var Video models.Video
-	id, _ := strconv.Atoi(params["id"])
-
-	result , err := h.Repo.GetVideo(id,Video)
-	if (err != nil) {
-		json.NewEncoder(w).Encode("Video does not exist!")
-	}else
-	{
-		json.NewEncoder(w).Encode(result)
+	var response models.Response
+	params := r.URL.Query() //Get params
+	id, err := strconv.Atoi(params["id"][0]) 
+	if err != nil {
+		responseFormatter(500,"INTERNAL SERVER ERROR",err.Error(),&response)
+		json.NewEncoder(w).Encode(response)
+		return
 	}
+	result , err1 := h.Repo.GetVideo(uint(id))
+	if (err1 != nil) {
+		responseFormatter(404,"NOT FOUND",err1.Error(),&response)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+	responseFormatter(200,"OK",result,&response)
+	json.NewEncoder(w).Encode(response)
+	
 
 	
 }
