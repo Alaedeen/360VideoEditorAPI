@@ -137,3 +137,47 @@ func (h *VideoHandler) DeleteComment(w http.ResponseWriter, r *http.Request)  {
 	responseFormatter(200,"OK","Comment DELETED",&response)
 	json.NewEncoder(w).Encode(response)
 }
+
+// AddReply ...
+func (h *VideoHandler) AddReply(w http.ResponseWriter, r *http.Request)  {
+	w.Header().Set("Content-Type", "application/json")
+	var Reply models.Reply
+	var response models.Response
+	err:=json.NewDecoder(r.Body).Decode(&Reply)
+	if err !=nil {
+		responseFormatter(400,"BAD REQUEST",err.Error(),&response)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+	_, err1:= h.Repo.AddReply(Reply)
+	if err1!=nil{
+		responseFormatter(500,"INTERNAL SERVER ERROR",err1.Error(),&response)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+	responseFormatter(201,"CREATED","Reply Added",&response)
+	json.NewEncoder(w).Encode(response)
+ 
+}
+
+
+// DeleteReply ... 
+func (h *VideoHandler) DeleteReply(w http.ResponseWriter, r *http.Request)  {
+	w.Header().Set("Content-Type", "application/json")
+	var response models.Response
+	params := r.URL.Query() //Get params
+	id, err := strconv.Atoi(params["id"][0]) 
+	if err != nil {
+		responseFormatter(500,"INTERNAL SERVER ERROR",err.Error(),&response)
+		json.NewEncoder(w).Encode(response)
+		return
+	} 
+	err1 := h.Repo.DeleteReply(uint(id))
+	if err1!=nil {
+		responseFormatter(404,"NOT FOUND",err1.Error(),&response)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+	responseFormatter(200,"OK","Reply DELETED",&response)
+	json.NewEncoder(w).Encode(response)
+}
