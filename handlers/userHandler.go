@@ -118,7 +118,9 @@ func (h *UserHandler) GetUserBy(w http.ResponseWriter, r *http.Request){
 		json.NewEncoder(w).Encode(response)
 		return
 	}
-	responseFormatter(200,"OK",result,&response)
+	var user models.UserResponse
+	userResponseFormatter(result,&user)
+	responseFormatter(200,"OK",user,&response)
 	json.NewEncoder(w).Encode(response)
 }
 
@@ -213,6 +215,14 @@ func (h *UserHandler) GetUserVideos(w http.ResponseWriter, r *http.Request)  {
 		json.NewEncoder(w).Encode(response)
 		return
 	}
-	responseFormatter(200,"OK",result,&response)
+
+	var videos	[]models.VideoResponse
+	var video models.VideoResponse
+	for _,res := range result {
+		
+	video = videoResponseFormatter(res)
+		videos= append(videos,video)
+	} 
+	responseFormatter(200,"OK",videos,&response)
 	json.NewEncoder(w).Encode(response)
 }
