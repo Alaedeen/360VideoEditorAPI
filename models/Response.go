@@ -32,6 +32,48 @@ type UserResponse struct {
 	RepliesDislikes 	[]RepliesDislikes	`json:"repliesDislikes"`
 }
 
+// VideoResponse Struct
+type VideoResponse struct {
+	ID				uint				`json:"vidId"`
+	UserID			int 				`json:"userId"`
+	Title			string 				`json:"title"`
+	UploadDate 		Date				`json:"uploadDate"`
+	Thumbnail 		string				`json:"thumbnail"`
+	Src 			string				`json:"src"`
+	AFrame 			string				`json:"aFrame"`
+	Likes 			int					`json:"likes"`
+	Dislikes 		int					`json:"dislikes"`
+	Views 			int					`json:"views"`
+	Comments		[]CommentResponse	`json:"comments"`
+}
+
+// CommentResponse Struct
+type CommentResponse struct {
+	ID				uint			`json:"idComment"`
+	UserID			int 			`json:"idUser"`
+	VideoID			int 			`json:"videoId"`
+	NameUser		string 			`json:"nameUser"`
+	ProfilePic		string 			`json:"profilePic"`
+	Text			string			`json:"text"`
+	CommentDate 	Date			`json:"date"`
+	Likes 			int				`json:"likes"`
+	Dislikes 		int				`json:"dislikes"`
+	Replies			[]ReplyResponse	`json:"replies"`
+}
+
+// ReplyResponse Struct
+type ReplyResponse struct {
+	ID				uint	`json:"idReply"`
+	UserID			int 	`json:"idUser"`
+	CommentID		int 	`json:"commentId"`
+	NameUser		string 	`json:"nameUser"`
+	ProfilePic		string 	`json:"profilePic"`
+	Text			string	`json:"text"`
+	ReplyDate 		Date	`json:"date"`
+	Likes 			int		`json:"likes"`
+	Dislikes 		int		`json:"dislikes"`
+}
+
 // Date Struct
 type Date struct {
 	Day 	int		`json:"day"`

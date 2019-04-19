@@ -1,6 +1,7 @@
 package repository
 
 import (
+	// "fmt"
 	"github.com/jinzhu/gorm"
 	models "github.com/Alaedeen/360VideoEditorAPI/models"
 )
@@ -41,16 +42,15 @@ func (r *VideoRepo) GetVideo(id uint ) (models.Video, error){
 	
 	err := r.Db.First(&Video,id).Error
 	r.Db.Model(&Video).Related(&comments)
-	// for _,comment := range comments {
-	// 	fmt.Println(comment)
-	// 	r.Db.Model(&comment).Related(&replies)
-	// 	comment.Replies=replies
-	// }
-	for index := 0; index < len(comments); index++ {
-		r.Db.Model(&comments[index]).Related(&replies)
-		comments[index].Replies=replies
-	}
+	
 	Video.Comments=comments
+	for index := 0; index < len(comments); index++ {
+		replies = replies[:0]
+		r.Db.Model(&comments[index]).Related(&replies)
+		Video.Comments[index].Replies=replies
+	}
+	
+	
 	return Video,err
 }
 
