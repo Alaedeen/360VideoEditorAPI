@@ -19,6 +19,37 @@ func responseFormatter (code int, status string, data interface{}, response *mod
 	response.Data=data
 }
 
+func userResponseFormatter(result models.User, user *models.UserResponse)  {
+	user.ID=result.ID
+	user.Name=result.Name
+	user.Email=result.Email
+	user.Password=result.Password
+	user.Roles = append(user.Roles,"user")
+	if result.Admin {
+		user.Roles = append(user.Roles,"admin")
+	}
+	if result.SuperAdmin {
+		user.Roles = append(user.Roles,"super admin")
+	}
+	user.DateOfBirth.Day=result.BirthDay
+	user.DateOfBirth.Month=result.BirthMonth
+	user.DateOfBirth.Year=result.BirthYear
+	user.Country=result.Country
+	user.Description=result.Description
+	user.ProfilePic=result.ProfilePic
+	user.Joined.Day=result.JoiningDay
+	user.Joined.Month=result.JoiningMonth
+	user.Joined.Year=result.JoiningYear
+	user.Subscribers=result.Subscribers
+	user.Subscriptions=result.Subscriptions
+	user.VideosLikes=result.VideosLikes
+	user.VideosDislikes=result.VideosDislikes
+	user.CommentsLikes=result.CommentsLikes
+	user.CommentsDislikes=result.CommentsDislikes
+	user.RepliesLikes=result.RepliesLikes
+	user.RepliesDislikes=result.RepliesDislikes
+}
+
 
 
 // GetUsers ...
@@ -31,7 +62,14 @@ func (h *UserHandler) GetUsers(w http.ResponseWriter, r *http.Request)  {
 		json.NewEncoder(w).Encode(response)
 		return
 	}
-	responseFormatter(200,"OK",result,&response)
+	var users []models.UserResponse
+	var user models.UserResponse
+	for _,res := range result {
+		user.Roles= user.Roles[:0]
+		userResponseFormatter(res,&user)
+		users= append(users,user)
+	} 
+	responseFormatter(200,"OK",users,&response)
 	json.NewEncoder(w).Encode(response)
 }
 
@@ -52,7 +90,9 @@ func (h *UserHandler) GetUser(w http.ResponseWriter, r *http.Request)  {
 		json.NewEncoder(w).Encode(response)
 		return
 	}
-	responseFormatter(200,"OK",result,&response)
+	var user models.UserResponse
+	userResponseFormatter(result,&user)
+	responseFormatter(200,"OK",user,&response)
 	json.NewEncoder(w).Encode(response)
 }
 
