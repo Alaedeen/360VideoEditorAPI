@@ -12,10 +12,13 @@ type VideoRepository interface {
 	GetVideo(id uint) (models.Video, error)
 	AddVideo( v models.Video) (models.Video, error)
 	DeleteVideo(id uint)(error)
+	UpdateVideo(u models.Video,id uint)(error)
 	AddComment( v models.Comment) (models.Comment, error)
 	DeleteComment(id uint)(error)
+	UpdateComment(u models.Comment,id uint)(error)
 	AddReply( v models.Reply) (models.Reply, error)
 	DeleteReply(id uint)(error)
+	UpdateReply(u models.Reply,id uint)(error)
 }
 
 // VideoRepo ...
@@ -74,6 +77,19 @@ func (r *VideoRepo) DeleteVideo(id uint)(error){
 	return err
 }
 
+// UpdateVideo ...
+func (r *VideoRepo) UpdateVideo(u models.Video,id uint)(error){
+	Video := models.Video{}
+	err := r.Db.First(&Video,id).Error
+	if err != nil {
+		return err
+	}
+	u.ID=id
+	err1 :=r.Db.Model(&Video).Updates(&u).Error
+	return err1
+
+}
+
 // AddComment ...
 func (r *VideoRepo) AddComment(b models.Comment) (models.Comment, error){
 	Comment :=b
@@ -94,6 +110,19 @@ func (r *VideoRepo) DeleteComment(id uint)(error){
 	return err
 }
 
+// UpdateComment ...
+func (r *VideoRepo) UpdateComment(u models.Comment,id uint)(error){
+	Comment := models.Comment{}
+	err := r.Db.First(&Comment,id).Error
+	if err != nil {
+		return err
+	}
+	u.ID=id
+	err1 :=r.Db.Model(&Comment).Updates(&u).Error
+	return err1
+
+}
+
 // AddReply ...
 func (r *VideoRepo) AddReply(b models.Reply) (models.Reply, error){
 	Reply :=b
@@ -112,4 +141,17 @@ func (r *VideoRepo) DeleteReply(id uint)(error){
 	Reply.ID=id
 	err =r.Db.Delete(&Reply).Error
 	return err
+}
+
+// UpdateReply ...
+func (r *VideoRepo) UpdateReply(u models.Reply,id uint)(error){
+	Reply := models.Reply{}
+	err := r.Db.First(&Reply,id).Error
+	if err != nil {
+		return err
+	}
+	u.ID=id
+	err1 :=r.Db.Model(&Reply).Updates(&u).Error
+	return err1
+
 }

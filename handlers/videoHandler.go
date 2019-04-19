@@ -166,6 +166,35 @@ func (h *VideoHandler) DeleteVideo(w http.ResponseWriter, r *http.Request)  {
 	json.NewEncoder(w).Encode(response)
 }
 
+// UpdateVideo ...
+func (h *VideoHandler) UpdateVideo(w http.ResponseWriter, r *http.Request){
+	w.Header().Set("Content-Type", "application/json")
+	params := r.URL.Query()["id"]
+	var Video models.Video
+	var response models.Response
+	err:=json.NewDecoder(r.Body).Decode(&Video)
+	if err != nil {
+		responseFormatter(400,"BAD REQUEST",err.Error(),&response)
+		json.NewEncoder(w).Encode(response)
+		return
+	} 
+	id, err1 := strconv.Atoi(params[0])
+	if err1 != nil {
+		responseFormatter(500,"INTERNAL SERVER ERROR",err1.Error(),&response)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+	err2 := h.Repo.UpdateVideo(Video,uint(id))
+	if err2 !=nil {
+		responseFormatter(404,"NOT FOUND",err2.Error(),&response)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+	
+	responseFormatter(200,"OK",Video,&response)
+	json.NewEncoder(w).Encode(response)
+}
+
 // AddComment ...
 func (h *VideoHandler) AddComment(w http.ResponseWriter, r *http.Request)  {
 	w.Header().Set("Content-Type", "application/json")
@@ -210,6 +239,35 @@ func (h *VideoHandler) DeleteComment(w http.ResponseWriter, r *http.Request)  {
 	json.NewEncoder(w).Encode(response)
 }
 
+// UpdateComment ...
+func (h *VideoHandler) UpdateComment(w http.ResponseWriter, r *http.Request){
+	w.Header().Set("Content-Type", "application/json")
+	params := r.URL.Query()["id"]
+	var Comment models.Comment
+	var response models.Response
+	err:=json.NewDecoder(r.Body).Decode(&Comment)
+	if err != nil {
+		responseFormatter(400,"BAD REQUEST",err.Error(),&response)
+		json.NewEncoder(w).Encode(response)
+		return
+	} 
+	id, err1 := strconv.Atoi(params[0])
+	if err1 != nil {
+		responseFormatter(500,"INTERNAL SERVER ERROR",err1.Error(),&response)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+	err2 := h.Repo.UpdateComment(Comment,uint(id))
+	if err2 !=nil {
+		responseFormatter(404,"NOT FOUND",err2.Error(),&response)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+	
+	responseFormatter(200,"OK",Comment,&response)
+	json.NewEncoder(w).Encode(response)
+}
+
 // AddReply ...
 func (h *VideoHandler) AddReply(w http.ResponseWriter, r *http.Request)  {
 	w.Header().Set("Content-Type", "application/json")
@@ -251,5 +309,34 @@ func (h *VideoHandler) DeleteReply(w http.ResponseWriter, r *http.Request)  {
 		return
 	}
 	responseFormatter(200,"OK","Reply DELETED",&response)
+	json.NewEncoder(w).Encode(response)
+}
+
+// UpdateReply ...
+func (h *VideoHandler) UpdateReply(w http.ResponseWriter, r *http.Request){
+	w.Header().Set("Content-Type", "application/json")
+	params := r.URL.Query()["id"]
+	var Reply models.Reply
+	var response models.Response
+	err:=json.NewDecoder(r.Body).Decode(&Reply)
+	if err != nil {
+		responseFormatter(400,"BAD REQUEST",err.Error(),&response)
+		json.NewEncoder(w).Encode(response)
+		return
+	} 
+	id, err1 := strconv.Atoi(params[0])
+	if err1 != nil {
+		responseFormatter(500,"INTERNAL SERVER ERROR",err1.Error(),&response)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+	err2 := h.Repo.UpdateReply(Reply,uint(id))
+	if err2 !=nil {
+		responseFormatter(404,"NOT FOUND",err2.Error(),&response)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+	
+	responseFormatter(200,"OK",Reply,&response)
 	json.NewEncoder(w).Encode(response)
 }

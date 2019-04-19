@@ -17,8 +17,11 @@ func (r *VideoRouterHandler) HandleFunctions() {
 	r.Router.HandleFunc("/api/v1/video", r.Handler.GetVideo).Methods("GET")
 	r.Router.HandleFunc("/api/v1/video", r.Handler.AddVideo).Methods("POST") 
 	r.Router.HandleFunc("/api/v1/video", r.Handler.DeleteVideo).Methods("DELETE")
+	r.Router.HandleFunc("/api/v1/video", r.Handler.UpdateVideo).Methods("PUT")
 	r.Router.HandleFunc("/api/v1/comment", r.Handler.AddComment).Methods("POST") 
 	r.Router.HandleFunc("/api/v1/comment", r.Handler.DeleteComment).Methods("DELETE")
+	r.Router.HandleFunc("/api/v1/comment", r.Handler.UpdateComment).Methods("PUT")
 	r.Router.HandleFunc("/api/v1/reply", r.Handler.AddReply).Methods("POST") 
 	r.Router.HandleFunc("/api/v1/reply", r.Handler.DeleteReply).Methods("DELETE") 
+	r.Router.HandleFunc("/api/v1/reply", r.Handler.UpdateReply).Methods("PUT")
 }
