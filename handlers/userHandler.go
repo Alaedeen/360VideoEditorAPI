@@ -57,9 +57,21 @@ func (h *UserHandler) GetUsers(w http.ResponseWriter, r *http.Request)  {
 	w.Header().Set("Content-Type", "application/json")
 	var response models.Response
 	role := r.URL.Query()["role"][0]
-	result,err := h.Repo.GetUsers(role) 
-	if err !=nil {
+	offset,err0 := strconv.Atoi(r.URL.Query()["offset"][0])
+	if err0 != nil {
+		responseFormatter(500,"INTERNAL SERVER ERROR",err0.Error(),&response)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+	limit , err:= strconv.Atoi(r.URL.Query()["limit"][0])
+	if err != nil {
 		responseFormatter(500,"INTERNAL SERVER ERROR",err.Error(),&response)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+	result,err1 := h.Repo.GetUsers(role,offset,limit) 
+	if err1 !=nil {
+		responseFormatter(500,"INTERNAL SERVER ERROR",err1.Error(),&response)
 		json.NewEncoder(w).Encode(response)
 		return
 	}
@@ -200,17 +212,29 @@ func (h *UserHandler) UpdateUser(w http.ResponseWriter, r *http.Request)  {
 // GetUserVideos ...
 func (h *UserHandler) GetUserVideos(w http.ResponseWriter, r *http.Request)  {
 	w.Header().Set("Content-Type", "application/json")
-	params := r.URL.Query()["id"]
-	var User models.User
 	var response models.Response
-	id,err := strconv.Atoi(params[0])//error handling
+	offset,err0 := strconv.Atoi(r.URL.Query()["offset"][0])
+	if err0 != nil {
+		responseFormatter(500,"INTERNAL SERVER ERROR",err0.Error(),&response)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+	limit , err:= strconv.Atoi(r.URL.Query()["limit"][0])
 	if err != nil {
 		responseFormatter(500,"INTERNAL SERVER ERROR",err.Error(),&response)
 		json.NewEncoder(w).Encode(response)
 		return
 	}
+	params := r.URL.Query()["id"]
+	var User models.User
+	id,err2 := strconv.Atoi(params[0])//error handling
+	if err2 != nil {
+		responseFormatter(500,"INTERNAL SERVER ERROR",err2.Error(),&response)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
 	User.ID = uint(id)
-	result,err1 := h.Repo.GetUserVideos(User)
+	result,err1 := h.Repo.GetUserVideos(User,offset,limit)
 	if err1 !=nil {
 		responseFormatter(404,"NOT FOUND",err1.Error(),&response)
 		json.NewEncoder(w).Encode(response)

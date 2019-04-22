@@ -8,7 +8,7 @@ import (
 
 // VideoRepository ...
 type VideoRepository interface {
-	GetVideos() ([]models.Video, error)
+	GetVideos(offset int,limit int) ([]models.Video, error)
 	GetVideo(id uint) (models.Video, error)
 	AddVideo( v models.Video) (models.Video, error)
 	DeleteVideo(id uint)(error)
@@ -29,10 +29,10 @@ type VideoRepo struct {
 
 
 // GetVideos ...
-func (r *VideoRepo) GetVideos() ([]models.Video, error){
+func (r *VideoRepo) GetVideos(offset int,limit int) ([]models.Video, error){
 	 Videos := []models.Video{}
 
-	r.Db.Find(&Videos)
+	r.Db.Offset(offset).Limit(limit).Find(&Videos)
 	
 	return Videos, nil
 }

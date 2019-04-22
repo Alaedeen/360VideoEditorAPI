@@ -7,13 +7,13 @@ import (
 
 // UserRepository ...
 type UserRepository interface {
-	GetUsers(role string) ([]models.User, error)
+	GetUsers(role string, offset int,limit int) ([]models.User, error)
 	GetUser(id uint) (models.User, error)
 	GetUserBy(keys []string, values []interface{}) (models.User, error)
 	CreateUser( u models.User) (models.User, error)
 	DeleteUser(id uint)(error)
 	UpdateUser(u models.User,id uint)(error)
-	GetUserVideos(u models.User) ([]models.Video, error)
+	GetUserVideos(u models.User, offset int,limit int) ([]models.Video, error)
 	AddCommentsLikes( c models.CommentsLikes) (error)
 	RemoveCommentsLikes(id int)(error)
 	AddCommentsDislikes( c models.CommentsDislikes) (error)
@@ -41,15 +41,15 @@ type UserRepo struct {
 
 
 // GetUsers ...
-func (r *UserRepo) GetUsers(role string) ([]models.User, error){
+func (r *UserRepo) GetUsers(role string,offset int,limit int) ([]models.User, error){
 	 var Users []models.User
 	 var err error
 	if role=="user" {
-		err=r.Db.Where("admin = ?", false).Find(&Users).Error
+		err=r.Db.Where("admin = ?", false).Offset(offset).Limit(limit).Find(&Users).Error
 	}else if role == "admin"{
-		err=r.Db.Where("admin = ? AND super_admin = ?", true, false).Find(&Users).Error
+		err=r.Db.Where("admin = ? AND super_admin = ?", true, false).Offset(offset).Limit(limit).Find(&Users).Error
 	}else{
-		err=r.Db.Where("admin = ? AND super_admin = ?", true, true).Find(&Users).Error
+		err=r.Db.Where("admin = ? AND super_admin = ?", true, true).Offset(offset).Limit(limit).Find(&Users).Error
 	}
 	
 	
@@ -132,10 +132,10 @@ func (r *UserRepo) UpdateUser(u models.User,id uint)(error){
 }
 
 // GetUserVideos ...
-func (r *UserRepo) GetUserVideos(u models.User)([]models.Video, error){
+func (r *UserRepo) GetUserVideos(u models.User,offset int,limit int)([]models.Video, error){
 	user := u
 	videos := []models.Video{}
-	err:=r.Db.Model(&user).Related(&videos).Error
+	err:=r.Db.Model(&user).Offset(offset).Limit(limit).Related(&videos).Error
 	return videos,err
 }
 
