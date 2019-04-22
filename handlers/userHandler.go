@@ -227,7 +227,7 @@ func (h *UserHandler) GetUserVideos(w http.ResponseWriter, r *http.Request)  {
 	json.NewEncoder(w).Encode(response)
 }
 
-// AddCommentsLikes (like,dislike or subscription)
+// AddCommentsLikes ...
 func (h *UserHandler) AddCommentsLikes(w http.ResponseWriter, r *http.Request)  {
 	w.Header().Set("Content-Type", "application/json")
 	var response models.Response
@@ -271,7 +271,7 @@ func (h *UserHandler) RemoveCommentsLikes(w http.ResponseWriter, r *http.Request
 	json.NewEncoder(w).Encode(response)
 }
 
-// AddCommentsDislikes (like,dislike or subscription)
+// AddCommentsDislikes ...
 func (h *UserHandler) AddCommentsDislikes(w http.ResponseWriter, r *http.Request)  {
 	w.Header().Set("Content-Type", "application/json")
 	var response models.Response
@@ -312,5 +312,93 @@ func (h *UserHandler) RemoveCommentsDislikes(w http.ResponseWriter, r *http.Requ
 		return
 	}
 	responseFormatter(200,"OK","COMMENT DISLIKE REMOVED",&response)
+	json.NewEncoder(w).Encode(response)
+}
+
+// AddRepliesLikes ...
+func (h *UserHandler) AddRepliesLikes(w http.ResponseWriter, r *http.Request)  {
+	w.Header().Set("Content-Type", "application/json")
+	var response models.Response
+	var RepliesLikes models.RepliesLikes
+	err:=json.NewDecoder(r.Body).Decode(&RepliesLikes)
+	if err != nil {
+		responseFormatter(400,"BAD REQUEST",err.Error(),&response)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+	
+	err1 := h.Repo.AddRepliesLikes(RepliesLikes)
+	if err1 != nil {
+		responseFormatter(500,"INTERNAL SERVER ERROR",err1.Error(),&response)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+	responseFormatter(201,"CREATED","ADDED",&response)
+	json.NewEncoder(w).Encode(response)
+}
+
+// RemoveRepliesLikes ...
+func (h *UserHandler) RemoveRepliesLikes(w http.ResponseWriter, r *http.Request)  {
+	w.Header().Set("Content-Type", "application/json")
+	params := r.URL.Query()["id"]
+	var response models.Response
+	id, err := strconv.Atoi(params[0])
+
+	if err != nil {
+		responseFormatter(500,"INTERNAL SERVER ERROR",err.Error(),&response)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+	err1 := h.Repo.RemoveRepliesLikes(id)
+	if err1!=nil {
+		responseFormatter(404,"NOT FOUND",err1.Error(),&response)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+	responseFormatter(200,"OK","REPLY LIKE REMOVED",&response)
+	json.NewEncoder(w).Encode(response)
+}
+
+// AddRepliesDislikes ...
+func (h *UserHandler) AddRepliesDislikes(w http.ResponseWriter, r *http.Request)  {
+	w.Header().Set("Content-Type", "application/json")
+	var response models.Response
+	var RepliesDislikes models.RepliesDislikes
+	err:=json.NewDecoder(r.Body).Decode(&RepliesDislikes)
+	if err != nil {
+		responseFormatter(400,"BAD REQUEST",err.Error(),&response)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+	
+	err1 := h.Repo.AddRepliesDislikes(RepliesDislikes)
+	if err1 != nil {
+		responseFormatter(500,"INTERNAL SERVER ERROR",err1.Error(),&response)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+	responseFormatter(201,"CREATED","ADDED",&response)
+	json.NewEncoder(w).Encode(response)
+}
+
+// RemoveRepliesDislikes ...
+func (h *UserHandler) RemoveRepliesDislikes(w http.ResponseWriter, r *http.Request)  {
+	w.Header().Set("Content-Type", "application/json")
+	params := r.URL.Query()["id"]
+	var response models.Response
+	id, err := strconv.Atoi(params[0])
+
+	if err != nil {
+		responseFormatter(500,"INTERNAL SERVER ERROR",err.Error(),&response)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+	err1 := h.Repo.RemoveRepliesDislikes(id)
+	if err1!=nil {
+		responseFormatter(404,"NOT FOUND",err1.Error(),&response)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+	responseFormatter(200,"OK","REPLY DISLIKE REMOVED",&response)
 	json.NewEncoder(w).Encode(response)
 }

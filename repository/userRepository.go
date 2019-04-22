@@ -18,6 +18,10 @@ type UserRepository interface {
 	RemoveCommentsLikes(id int)(error)
 	AddCommentsDislikes( c models.CommentsDislikes) (error)
 	RemoveCommentsDislikes(id int)(error)
+	AddRepliesLikes( c models.RepliesLikes) (error)
+	RemoveRepliesLikes(id int)(error)
+	AddRepliesDislikes( c models.RepliesDislikes) (error)
+	RemoveRepliesDislikes(id int)(error)
 }
 
 // UserRepo ...
@@ -153,6 +157,44 @@ func (r *UserRepo) RemoveCommentsDislikes(id int)(error){
 		return err
 	}
 	dislike.CommentID = id
+	err =r.Db.Unscoped().Delete(&dislike).Error
+	return err
+}
+
+// AddRepliesLikes ...
+func (r *UserRepo)AddRepliesLikes( c models.RepliesLikes) (error){
+	RepliesLike :=c
+	err :=r.Db.Create(&RepliesLike).Error
+	return  err
+}
+
+// RemoveRepliesLikes ...
+func (r *UserRepo) RemoveRepliesLikes(id int)(error){
+	like := models.RepliesLikes{}
+	err := r.Db.First(&like,id).Error
+	if err != nil {
+		return err
+	}
+	like.ReplyID = id
+	err =r.Db.Unscoped().Delete(&like).Error
+	return err
+}
+
+// AddRepliesDislikes ...
+func (r *UserRepo)AddRepliesDislikes( c models.RepliesDislikes) (error){
+	RepliesDislike :=c
+	err :=r.Db.Create(&RepliesDislike).Error
+	return  err
+}
+
+// RemoveRepliesDislikes ...
+func (r *UserRepo) RemoveRepliesDislikes(id int)(error){
+	dislike := models.RepliesDislikes{}
+	err := r.Db.First(&dislike,id).Error
+	if err != nil {
+		return err
+	}
+	dislike.ReplyID = id
 	err =r.Db.Unscoped().Delete(&dislike).Error
 	return err
 }
