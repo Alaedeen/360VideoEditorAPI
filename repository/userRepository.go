@@ -18,10 +18,16 @@ type UserRepository interface {
 	RemoveCommentsLikes(id int)(error)
 	AddCommentsDislikes( c models.CommentsDislikes) (error)
 	RemoveCommentsDislikes(id int)(error)
+
 	AddRepliesLikes( c models.RepliesLikes) (error)
 	RemoveRepliesLikes(id int)(error)
 	AddRepliesDislikes( c models.RepliesDislikes) (error)
 	RemoveRepliesDislikes(id int)(error)
+
+	AddVideosLikes( c models.VideosLikes) (error)
+	RemoveVideosLikes(id int)(error)
+	AddVideosDislikes( c models.VideosDislikes) (error)
+	RemoveVideosDislikes(id int)(error)
 }
 
 // UserRepo ...
@@ -195,6 +201,44 @@ func (r *UserRepo) RemoveRepliesDislikes(id int)(error){
 		return err
 	}
 	dislike.ReplyID = id
+	err =r.Db.Unscoped().Delete(&dislike).Error
+	return err
+}
+
+// AddVideosLikes ...
+func (r *UserRepo)AddVideosLikes( c models.VideosLikes) (error){
+	VideosLike :=c
+	err :=r.Db.Create(&VideosLike).Error
+	return  err
+}
+
+// RemoveVideosLikes ...
+func (r *UserRepo) RemoveVideosLikes(id int)(error){
+	like := models.VideosLikes{}
+	err := r.Db.First(&like,id).Error
+	if err != nil {
+		return err
+	}
+	like.VideoID = id
+	err =r.Db.Unscoped().Delete(&like).Error
+	return err
+}
+
+// AddVideosDislikes ...
+func (r *UserRepo)AddVideosDislikes( c models.VideosDislikes) (error){
+	VideosDislike :=c
+	err :=r.Db.Create(&VideosDislike).Error
+	return  err
+}
+
+// RemoveVideosDislikes ...
+func (r *UserRepo) RemoveVideosDislikes(id int)(error){
+	dislike := models.VideosDislikes{}
+	err := r.Db.First(&dislike,id).Error
+	if err != nil {
+		return err
+	}
+	dislike.VideoID = id
 	err =r.Db.Unscoped().Delete(&dislike).Error
 	return err
 }

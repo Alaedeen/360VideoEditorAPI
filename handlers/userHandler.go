@@ -402,3 +402,91 @@ func (h *UserHandler) RemoveRepliesDislikes(w http.ResponseWriter, r *http.Reque
 	responseFormatter(200,"OK","REPLY DISLIKE REMOVED",&response)
 	json.NewEncoder(w).Encode(response)
 }
+
+// AddVideosLikes ...
+func (h *UserHandler) AddVideosLikes(w http.ResponseWriter, r *http.Request)  {
+	w.Header().Set("Content-Type", "application/json")
+	var response models.Response
+	var VideosLikes models.VideosLikes
+	err:=json.NewDecoder(r.Body).Decode(&VideosLikes)
+	if err != nil {
+		responseFormatter(400,"BAD REQUEST",err.Error(),&response)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+	
+	err1 := h.Repo.AddVideosLikes(VideosLikes)
+	if err1 != nil {
+		responseFormatter(500,"INTERNAL SERVER ERROR",err1.Error(),&response)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+	responseFormatter(201,"CREATED","ADDED",&response)
+	json.NewEncoder(w).Encode(response)
+}
+
+// RemoveVideosLikes ...
+func (h *UserHandler) RemoveVideosLikes(w http.ResponseWriter, r *http.Request)  {
+	w.Header().Set("Content-Type", "application/json")
+	params := r.URL.Query()["id"]
+	var response models.Response
+	id, err := strconv.Atoi(params[0])
+
+	if err != nil {
+		responseFormatter(500,"INTERNAL SERVER ERROR",err.Error(),&response)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+	err1 := h.Repo.RemoveVideosLikes(id)
+	if err1!=nil {
+		responseFormatter(404,"NOT FOUND",err1.Error(),&response)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+	responseFormatter(200,"OK","VIDEO LIKE REMOVED",&response)
+	json.NewEncoder(w).Encode(response)
+}
+
+// AddVideosDislikes ...
+func (h *UserHandler) AddVideosDislikes(w http.ResponseWriter, r *http.Request)  {
+	w.Header().Set("Content-Type", "application/json")
+	var response models.Response
+	var VideosDislikes models.VideosDislikes
+	err:=json.NewDecoder(r.Body).Decode(&VideosDislikes)
+	if err != nil {
+		responseFormatter(400,"BAD REQUEST",err.Error(),&response)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+	
+	err1 := h.Repo.AddVideosDislikes(VideosDislikes)
+	if err1 != nil {
+		responseFormatter(500,"INTERNAL SERVER ERROR",err1.Error(),&response)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+	responseFormatter(201,"CREATED","ADDED",&response)
+	json.NewEncoder(w).Encode(response)
+}
+
+// RemoveVideosDislikes ...
+func (h *UserHandler) RemoveVideosDislikes(w http.ResponseWriter, r *http.Request)  {
+	w.Header().Set("Content-Type", "application/json")
+	params := r.URL.Query()["id"]
+	var response models.Response
+	id, err := strconv.Atoi(params[0])
+
+	if err != nil {
+		responseFormatter(500,"INTERNAL SERVER ERROR",err.Error(),&response)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+	err1 := h.Repo.RemoveVideosDislikes(id)
+	if err1!=nil {
+		responseFormatter(404,"NOT FOUND",err1.Error(),&response)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+	responseFormatter(200,"OK","VIDEO DISLIKE REMOVED",&response)
+	json.NewEncoder(w).Encode(response)
+}
