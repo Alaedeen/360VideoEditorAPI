@@ -7,7 +7,7 @@ import (
 
 // UserRepository ...
 type UserRepository interface {
-	GetUsers() ([]models.User, error)
+	GetUsers(role string) ([]models.User, error)
 	GetUser(id uint) (models.User, error)
 	GetUserBy(keys []string, values []interface{}) (models.User, error)
 	CreateUser( u models.User) (models.User, error)
@@ -41,10 +41,17 @@ type UserRepo struct {
 
 
 // GetUsers ...
-func (r *UserRepo) GetUsers() ([]models.User, error){
+func (r *UserRepo) GetUsers(role string) ([]models.User, error){
 	 var Users []models.User
-
-	err:=r.Db.Model(&models.User{}).Find(&Users).Error
+	 var err error
+	if role=="user" {
+		err=r.Db.Where("admin = ?", false).Find(&Users).Error
+	}else if role == "admin"{
+		err=r.Db.Where("admin = ? AND super_admin = ?", true, false).Find(&Users).Error
+	}else{
+		err=r.Db.Where("admin = ? AND super_admin = ?", true, true).Find(&Users).Error
+	}
+	
 	
 	return Users, err
 }

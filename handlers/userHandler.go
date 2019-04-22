@@ -56,7 +56,8 @@ func userResponseFormatter(result models.User, user *models.UserResponse)  {
 func (h *UserHandler) GetUsers(w http.ResponseWriter, r *http.Request)  {
 	w.Header().Set("Content-Type", "application/json")
 	var response models.Response
-	result,err := h.Repo.GetUsers() 
+	role := r.URL.Query()["role"][0]
+	result,err := h.Repo.GetUsers(role) 
 	if err !=nil {
 		responseFormatter(500,"INTERNAL SERVER ERROR",err.Error(),&response)
 		json.NewEncoder(w).Encode(response)
