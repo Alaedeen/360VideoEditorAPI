@@ -22,4 +22,6 @@ func (r *UserRouterHandler) HandleFunctions() {
 	r.Router.HandleFunc("/api/v1/users", r.Handler.DeleteUser).Methods("DELETE")
 	r.Router.HandleFunc("/api/v1/commentsLikes", r.Handler.AddCommentsLikes).Methods("POST")
 	r.Router.HandleFunc("/api/v1/commentsLikes", r.Handler.RemoveCommentsLikes).Methods("DELETE")
+	r.Router.HandleFunc("/api/v1/commentsDislikes", r.Handler.AddCommentsDislikes).Methods("POST")
+	r.Router.HandleFunc("/api/v1/commentsDislikes", r.Handler.RemoveCommentsDislikes).Methods("DELETE")
 }

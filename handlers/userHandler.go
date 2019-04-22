@@ -270,3 +270,47 @@ func (h *UserHandler) RemoveCommentsLikes(w http.ResponseWriter, r *http.Request
 	responseFormatter(200,"OK","COMMENT LIKE REMOVED",&response)
 	json.NewEncoder(w).Encode(response)
 }
+
+// AddCommentsDislikes (like,dislike or subscription)
+func (h *UserHandler) AddCommentsDislikes(w http.ResponseWriter, r *http.Request)  {
+	w.Header().Set("Content-Type", "application/json")
+	var response models.Response
+	var CommentsDislikes models.CommentsDislikes
+	err:=json.NewDecoder(r.Body).Decode(&CommentsDislikes)
+	if err != nil {
+		responseFormatter(400,"BAD REQUEST",err.Error(),&response)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+	
+	err1 := h.Repo.AddCommentsDislikes(CommentsDislikes)
+	if err1 != nil {
+		responseFormatter(500,"INTERNAL SERVER ERROR",err1.Error(),&response)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+	responseFormatter(201,"CREATED","ADDED",&response)
+	json.NewEncoder(w).Encode(response)
+}
+
+// RemoveCommentsDislikes ...
+func (h *UserHandler) RemoveCommentsDislikes(w http.ResponseWriter, r *http.Request)  {
+	w.Header().Set("Content-Type", "application/json")
+	params := r.URL.Query()["id"]
+	var response models.Response
+	id, err := strconv.Atoi(params[0])
+
+	if err != nil {
+		responseFormatter(500,"INTERNAL SERVER ERROR",err.Error(),&response)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+	err1 := h.Repo.RemoveCommentsDislikes(id)
+	if err1!=nil {
+		responseFormatter(404,"NOT FOUND",err1.Error(),&response)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+	responseFormatter(200,"OK","COMMENT DISLIKE REMOVED",&response)
+	json.NewEncoder(w).Encode(response)
+}
