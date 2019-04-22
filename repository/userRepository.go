@@ -14,6 +14,8 @@ type UserRepository interface {
 	DeleteUser(id uint)(error)
 	UpdateUser(u models.User,id uint)(error)
 	GetUserVideos(u models.User) ([]models.Video, error)
+	AddCommentsLikes( c models.CommentsLikes) (error)
+	RemoveCommentsLikes(id int)(error)
 }
 
 // UserRepo ...
@@ -113,4 +115,25 @@ func (r *UserRepo) GetUserVideos(u models.User)([]models.Video, error){
 	videos := []models.Video{}
 	err:=r.Db.Model(&user).Related(&videos).Error
 	return videos,err
+}
+
+// AddCommentsLikes ...
+func (r *UserRepo)AddCommentsLikes( c models.CommentsLikes) (error){
+	CommentsLike :=c
+	err :=r.Db.Create(&CommentsLike).Error
+	return  err
+}
+
+// RemoveCommentsLikes ...
+func (r *UserRepo) RemoveCommentsLikes(id int)(error){
+	like := models.CommentsLikes{}
+	err := r.Db.First(&like,id).Error
+	if err != nil {
+		return err
+	}
+	
+	like.CommentID = id
+	err =r.Db.Unscoped().Delete(&like).Error
+	return err
+	
 }

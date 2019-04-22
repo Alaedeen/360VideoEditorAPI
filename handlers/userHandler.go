@@ -141,7 +141,7 @@ func (h *UserHandler) CreateUser(w http.ResponseWriter, r *http.Request)  {
 		json.NewEncoder(w).Encode(response)
 		return
 	}
-	responseFormatter(201,"CREATED",result.Name+" Created",&response)
+	responseFormatter(201,"CREATED",result.Name+" CREATED",&response)
 	json.NewEncoder(w).Encode(response)
 }
 
@@ -224,5 +224,49 @@ func (h *UserHandler) GetUserVideos(w http.ResponseWriter, r *http.Request)  {
 		videos= append(videos,video)
 	} 
 	responseFormatter(200,"OK",videos,&response)
+	json.NewEncoder(w).Encode(response)
+}
+
+// AddCommentsLikes (like,dislike or subscription)
+func (h *UserHandler) AddCommentsLikes(w http.ResponseWriter, r *http.Request)  {
+	w.Header().Set("Content-Type", "application/json")
+	var response models.Response
+	var CommentsLikes models.CommentsLikes
+	err:=json.NewDecoder(r.Body).Decode(&CommentsLikes)
+	if err != nil {
+		responseFormatter(400,"BAD REQUEST",err.Error(),&response)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+	
+	err1 := h.Repo.AddCommentsLikes(CommentsLikes)
+	if err1 != nil {
+		responseFormatter(500,"INTERNAL SERVER ERROR",err1.Error(),&response)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+	responseFormatter(201,"CREATED","ADDED",&response)
+	json.NewEncoder(w).Encode(response)
+}
+
+// RemoveCommentsLikes ...
+func (h *UserHandler) RemoveCommentsLikes(w http.ResponseWriter, r *http.Request)  {
+	w.Header().Set("Content-Type", "application/json")
+	params := r.URL.Query()["id"]
+	var response models.Response
+	id, err := strconv.Atoi(params[0])
+
+	if err != nil {
+		responseFormatter(500,"INTERNAL SERVER ERROR",err.Error(),&response)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+	err1 := h.Repo.RemoveCommentsLikes(id)
+	if err1!=nil {
+		responseFormatter(404,"NOT FOUND",err1.Error(),&response)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+	responseFormatter(200,"OK","COMMENT LIKE REMOVED",&response)
 	json.NewEncoder(w).Encode(response)
 }

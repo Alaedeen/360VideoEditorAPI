@@ -20,4 +20,6 @@ func (r *UserRouterHandler) HandleFunctions() {
 	r.Router.HandleFunc("/api/v1/users", r.Handler.CreateUser).Methods("POST")
 	r.Router.HandleFunc("/api/v1/users", r.Handler.UpdateUser).Methods("PUT") 
 	r.Router.HandleFunc("/api/v1/users", r.Handler.DeleteUser).Methods("DELETE")
+	r.Router.HandleFunc("/api/v1/commentsLikes", r.Handler.AddCommentsLikes).Methods("POST")
+	r.Router.HandleFunc("/api/v1/commentsLikes", r.Handler.RemoveCommentsLikes).Methods("DELETE")
 }
