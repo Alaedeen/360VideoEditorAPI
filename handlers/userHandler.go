@@ -490,3 +490,47 @@ func (h *UserHandler) RemoveVideosDislikes(w http.ResponseWriter, r *http.Reques
 	responseFormatter(200,"OK","VIDEO DISLIKE REMOVED",&response)
 	json.NewEncoder(w).Encode(response)
 }
+
+// AddSubscriptions ...
+func (h *UserHandler) AddSubscriptions(w http.ResponseWriter, r *http.Request)  {
+	w.Header().Set("Content-Type", "application/json")
+	var response models.Response
+	var Subscriptions models.Subscriptions
+	err:=json.NewDecoder(r.Body).Decode(&Subscriptions)
+	if err != nil {
+		responseFormatter(400,"BAD REQUEST",err.Error(),&response)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+	
+	err1 := h.Repo.AddSubscriptions(Subscriptions)
+	if err1 != nil {
+		responseFormatter(500,"INTERNAL SERVER ERROR",err1.Error(),&response)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+	responseFormatter(201,"CREATED","ADDED",&response)
+	json.NewEncoder(w).Encode(response)
+}
+
+// RemoveSubscriptions ...
+func (h *UserHandler) RemoveSubscriptions(w http.ResponseWriter, r *http.Request)  {
+	w.Header().Set("Content-Type", "application/json")
+	params := r.URL.Query()["id"]
+	var response models.Response
+	id, err := strconv.Atoi(params[0])
+
+	if err != nil {
+		responseFormatter(500,"INTERNAL SERVER ERROR",err.Error(),&response)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+	err1 := h.Repo.RemoveSubscriptions(id)
+	if err1!=nil {
+		responseFormatter(404,"NOT FOUND",err1.Error(),&response)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+	responseFormatter(200,"OK","SUBSCRIPTION REMOVED",&response)
+	json.NewEncoder(w).Encode(response)
+}

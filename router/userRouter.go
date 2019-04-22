@@ -35,4 +35,7 @@ func (r *UserRouterHandler) HandleFunctions() {
 	r.Router.HandleFunc("/api/v1/videosLikes", r.Handler.RemoveVideosLikes).Methods("DELETE")
 	r.Router.HandleFunc("/api/v1/videosDislikes", r.Handler.AddVideosDislikes).Methods("POST")
 	r.Router.HandleFunc("/api/v1/videosDislikes", r.Handler.RemoveVideosDislikes).Methods("DELETE")
+
+	r.Router.HandleFunc("/api/v1/subscriptions", r.Handler.AddSubscriptions).Methods("POST")
+	r.Router.HandleFunc("/api/v1/subscriptions", r.Handler.RemoveSubscriptions).Methods("DELETE")
 }

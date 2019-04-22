@@ -28,6 +28,9 @@ type UserRepository interface {
 	RemoveVideosLikes(id int)(error)
 	AddVideosDislikes( c models.VideosDislikes) (error)
 	RemoveVideosDislikes(id int)(error)
+
+	AddSubscriptions( c models.Subscriptions) (error)
+	RemoveSubscriptions(id int)(error)
 }
 
 // UserRepo ...
@@ -240,5 +243,24 @@ func (r *UserRepo) RemoveVideosDislikes(id int)(error){
 	}
 	dislike.VideoID = id
 	err =r.Db.Unscoped().Delete(&dislike).Error
+	return err
+}
+
+// AddSubscriptions ...
+func (r *UserRepo)AddSubscriptions( c models.Subscriptions) (error){
+	Subscription :=c
+	err :=r.Db.Create(&Subscription).Error
+	return  err
+}
+
+// RemoveSubscriptions ...
+func (r *UserRepo) RemoveSubscriptions(id int)(error){
+	Subscription := models.Subscriptions{}
+	err := r.Db.First(&Subscription,id).Error
+	if err != nil {
+		return err
+	}
+	Subscription.IDSubscribed = id
+	err =r.Db.Unscoped().Delete(&Subscription).Error
 	return err
 }
