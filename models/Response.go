@@ -106,3 +106,17 @@ type Date struct {
 	Month 	string 	`json:"month"`
 	Year 	int		`json:"year"`
 }
+
+// ProjectResponse struct
+type ProjectResponse struct {
+	ID				uint 			`json:"projectId"`
+	UserID			int 			`json:"userId"`
+	Title			string 			`json:"title"`
+	Thumbnail 		string			`json:"thumbnail"`
+	AFrame 			string			`json:"aFrame"`
+	Video 			string			`json:"video"`
+	Shapes 			map[string]int	`json:"shapes"`
+	Tag 			int				`json:"tag"`
+	ShapesList		[]AddedShapes 	`json:"shapesList"`
+	TagsList		[]AddedTags		`json:"tagsList"`
+}

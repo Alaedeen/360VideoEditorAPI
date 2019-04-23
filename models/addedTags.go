@@ -9,5 +9,5 @@ type AddedTags struct {
 	gorm.Model
 	ProjectID		int 			`json:"projectId"`
 	IDTag	 		string			`json:"id"`
-	Shapes			[]TagElements 	`json:"shapesList"`
+	Shapes			[]TagElements 	`json:"shapes"`
 }

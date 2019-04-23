@@ -14,7 +14,7 @@ type ProjectRouterHandler struct {
 func (r *ProjectRouterHandler) HandleFunctions() {
 	// Route Handlers / Endpoints  
 	r.Router.HandleFunc("/api/v1/projects", r.Handler.GetProjects).Methods("GET")
-	// r.Router.HandleFunc("/api/v1/project", r.Handler.GetProject).Methods("GET")
+	r.Router.HandleFunc("/api/v1/project", r.Handler.GetProject).Methods("GET")
 	// r.Router.HandleFunc("/api/v1/sahpes", r.Handler.GetShapes).Methods("GET")
 	// r.Router.HandleFunc("/api/v1/fonts", r.Handler.GetFonts).Methods("GET") 
 	// r.Router.HandleFunc("/api/v1/project", r.Handler.CreateProject).Methods("POST")
