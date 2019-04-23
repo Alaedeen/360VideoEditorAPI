@@ -14,6 +14,8 @@ type UserRepository interface {
 	DeleteUser(id uint)(error)
 	UpdateUser(u models.User,id uint)(error)
 	GetUserVideos(u models.User, offset int,limit int) ([]models.Video, error)
+	GetUserPictures(u models.User, offset int,limit int) ([]models.Picture, error)
+	GetUserProjectVideos(u models.User, offset int,limit int) ([]models.Video2D, error)
 	AddCommentsLikes( c models.CommentsLikes) (error)
 	RemoveCommentsLikes(id int)(error)
 	AddCommentsDislikes( c models.CommentsDislikes) (error)
@@ -135,6 +137,22 @@ func (r *UserRepo) UpdateUser(u models.User,id uint)(error){
 func (r *UserRepo) GetUserVideos(u models.User,offset int,limit int)([]models.Video, error){
 	user := u
 	videos := []models.Video{}
+	err:=r.Db.Model(&user).Offset(offset).Limit(limit).Related(&videos).Error
+	return videos,err
+}
+
+// GetUserPictures ...
+func (r *UserRepo) GetUserPictures(u models.User, offset int,limit int) ([]models.Picture, error){
+	user := u
+	pictures := []models.Picture{}
+	err:=r.Db.Model(&user).Offset(offset).Limit(limit).Related(&pictures).Error
+	return pictures,err
+}
+
+// GetUserProjectVideos ...
+func (r *UserRepo) GetUserProjectVideos(u models.User, offset int,limit int) ([]models.Video2D, error){
+	user := u
+	videos := []models.Video2D{}
 	err:=r.Db.Model(&user).Offset(offset).Limit(limit).Related(&videos).Error
 	return videos,err
 }

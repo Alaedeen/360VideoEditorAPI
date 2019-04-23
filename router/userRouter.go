@@ -17,6 +17,8 @@ func (r *UserRouterHandler) HandleFunctions() {
 	r.Router.HandleFunc("/api/v1/user", r.Handler.GetUser).Methods("GET")
 	r.Router.HandleFunc("/api/v1/userby", r.Handler.GetUserBy).Methods("GET")
 	r.Router.HandleFunc("/api/v1/user/videos", r.Handler.GetUserVideos).Methods("GET")
+	r.Router.HandleFunc("/api/v1/user/pictures", r.Handler.GetUserPictures).Methods("GET")
+	r.Router.HandleFunc("/api/v1/user/projectVideos", r.Handler.GetUserProjectVideos).Methods("GET")
 	r.Router.HandleFunc("/api/v1/users", r.Handler.CreateUser).Methods("POST")
 	r.Router.HandleFunc("/api/v1/users", r.Handler.UpdateUser).Methods("PUT") 
 	r.Router.HandleFunc("/api/v1/users", r.Handler.DeleteUser).Methods("DELETE")
