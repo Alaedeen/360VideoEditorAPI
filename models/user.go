@@ -30,6 +30,7 @@ type User struct {
 	CommentsDislikes 	[]CommentsDislikes	`json:"commentsDislikes"`
 	RepliesLikes 		[]RepliesLikes		`json:"repliesLikes"`
 	RepliesDislikes 	[]RepliesDislikes	`json:"repliesDislikes"`
+	Projects			[]Project			`json:"projects"`
 	ProjectVideos		[]Video2D			`json:"projectVideos"`
 	ProjectPictures		[]Picture			`json:"projectPictures"`
 }

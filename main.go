@@ -60,12 +60,16 @@ func main()  {
 	userHandler := handlers.UserHandler{&userRepo}
 	videoRepo := repository.VideoRepo{db}
 	videoHandler := handlers.VideoHandler{&videoRepo}
+	projectRepo := repository.ProjectRepo{db}
+	projectHandler := handlers.ProjectHandler{&projectRepo}
 	// Init Router 
 	r := mux.NewRouter()
 	UserRouterHandler := router.UserRouterHandler{Router: r,Handler: userHandler}
 	UserRouterHandler.HandleFunctions()
 	VideoRouterHandler := router.VideoRouterHandler{Router: r,Handler: videoHandler}
 	VideoRouterHandler.HandleFunctions()
+	ProjectRouterHandler := router.ProjectRouterHandler{Router: r,Handler: projectHandler}
+	ProjectRouterHandler.HandleFunctions()
 	// start server
 	port := ":" + strconv.Itoa(configuration.Server.Port) 
 	log.Fatal(http.ListenAndServe(port,r))
