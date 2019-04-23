@@ -23,13 +23,39 @@ type UserResponse struct {
 	Joined				Date				`json:"joined"`
 	Subscribers 		int					`json:"subscribers"`
 	Videos				[]Video				`json:"videos"`
-	Subscriptions 		[]Subscriptions		`json:"subscriptions"`
-	VideosLikes 		[]VideosLikes		`json:"videosLikes"`
-	VideosDislikes 		[]VideosDislikes	`json:"videosDislikes"`
-	CommentsLikes 		[]CommentsLikes		`json:"commentsLikes"`
-	CommentsDislikes 	[]CommentsDislikes	`json:"commentsDislikes"`
-	RepliesLikes 		[]RepliesLikes		`json:"repliesLikes"`
-	RepliesDislikes 	[]RepliesDislikes	`json:"repliesDislikes"`
+	Subscriptions 		[]int				`json:"subscriptions"`
+	VideosLikes 		[]int				`json:"videosLikes"`
+	VideosDislikes 		[]int				`json:"videosDislikes"`
+	CommentsLikes 		[]CommentsLikesResponse		`json:"commentsLikes"`
+	CommentsDislikes 	[]CommentsDislikesResponse	`json:"commentsDislikes"`
+	RepliesLikes 		[]RepliesLikesResponse		`json:"repliesLikes"`
+	RepliesDislikes 	[]RepliesDislikesResponse	`json:"repliesDislikes"`
+}
+
+// CommentsLikesResponse struct
+type CommentsLikesResponse struct {
+	VideoID		int `json:"idVideo"`
+	CommentID	int `json:"idComment"`
+}
+
+// CommentsDislikesResponse struct
+type CommentsDislikesResponse struct {
+	VideoID		int `json:"idVideo"`
+	CommentID	int `json:"idComment"`
+}
+
+// RepliesLikesResponse struct
+type RepliesLikesResponse struct {
+	VideoID		int `json:"idVideo"`
+	CommentID	int `json:"idComment"`
+	ReplyID 	int `json:"idReply"`
+}
+
+// RepliesDislikesResponse struct
+type RepliesDislikesResponse struct {
+	VideoID		int `json:"idVideo"`
+	CommentID	int `json:"idComment"`
+	ReplyID 	int `json:"idReply"`
 }
 
 // VideoResponse Struct

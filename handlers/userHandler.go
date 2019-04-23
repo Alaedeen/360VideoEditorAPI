@@ -41,13 +41,48 @@ func userResponseFormatter(result models.User, user *models.UserResponse)  {
 	user.Joined.Month=result.JoiningMonth
 	user.Joined.Year=result.JoiningYear
 	user.Subscribers=result.Subscribers
-	user.Subscriptions=result.Subscriptions
-	user.VideosLikes=result.VideosLikes
-	user.VideosDislikes=result.VideosDislikes
-	user.CommentsLikes=result.CommentsLikes
-	user.CommentsDislikes=result.CommentsDislikes
-	user.RepliesLikes=result.RepliesLikes
-	user.RepliesDislikes=result.RepliesDislikes
+	user.Subscriptions = []int{}
+	for _,subscription := range result.Subscriptions {
+		user.Subscriptions = append(user.Subscriptions,subscription.IDSubscribed)
+	}
+	user.VideosLikes = []int{}
+	for _,VideoLike := range result.VideosLikes {
+		user.VideosLikes = append(user.VideosLikes,VideoLike.VideoID)
+	}
+	user.VideosDislikes = []int{}
+	for _,VideoDislike := range result.VideosDislikes {
+		user.VideosDislikes = append(user.VideosDislikes,VideoDislike.VideoID)
+	}
+	user.CommentsLikes = []models.CommentsLikesResponse{}
+	for _,CommentLike := range result.CommentsLikes {
+		var commentLike models.CommentsLikesResponse
+		commentLike.VideoID=CommentLike.VideoID
+		commentLike.CommentID=CommentLike.CommentID
+		user.CommentsLikes = append(user.CommentsLikes,commentLike)
+	}
+	user.CommentsDislikes = []models.CommentsDislikesResponse{}
+	for _,CommentDislike := range result.CommentsDislikes {
+		var commentDislike models.CommentsDislikesResponse
+		commentDislike.VideoID=CommentDislike.VideoID
+		commentDislike.CommentID=CommentDislike.CommentID
+		user.CommentsDislikes = append(user.CommentsDislikes,commentDislike)
+	}
+	user.RepliesLikes = []models.RepliesLikesResponse{}
+	for _,ReplyLike := range result.RepliesLikes {
+		var replyLike models.RepliesLikesResponse
+		replyLike.VideoID=ReplyLike.VideoID
+		replyLike.CommentID=ReplyLike.CommentID
+		replyLike.ReplyID=ReplyLike.ReplyID
+		user.RepliesLikes = append(user.RepliesLikes,replyLike)
+	}
+	user.RepliesDislikes = []models.RepliesDislikesResponse{}
+	for _,ReplyDislike := range result.RepliesDislikes {
+		var replyDislike models.RepliesDislikesResponse
+		replyDislike.VideoID=ReplyDislike.VideoID
+		replyDislike.CommentID=ReplyDislike.CommentID
+		replyDislike.ReplyID=ReplyDislike.ReplyID
+		user.RepliesDislikes = append(user.RepliesDislikes,replyDislike)
+	}
 }
 
 
