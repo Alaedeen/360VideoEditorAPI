@@ -22,6 +22,8 @@ type ProjectRepository interface {
 	DeleteTagElement(id uint)(error)
 	AddPicture( e models.Picture) (models.Picture, error)
 	DeletePicture(id uint)(error)
+	AddProjectVideo( e models.Video2D) (models.Video2D, error)
+	DeleteProjectVideo(id uint)(error)
 }
 
 // ProjectRepo ...
@@ -179,5 +181,24 @@ func (r *ProjectRepo) DeletePicture(id uint)(error) {
 	}
 	Picture.ID=id
 	err =r.Db.Delete(&Picture).Error
+	return err
+}
+
+// AddProjectVideo ...
+func (r *ProjectRepo) AddProjectVideo( e models.Video2D) (models.Video2D, error){
+	Video2D :=e
+	err :=r.Db.Create(&Video2D).Error
+	return Video2D, err
+}
+
+// DeleteProjectVideo ...
+func (r *ProjectRepo) DeleteProjectVideo(id uint)(error) {
+	Video2D := models.Video2D{}
+	err := r.Db.First(&Video2D,id).Error
+	if err != nil {
+		return err
+	}
+	Video2D.ID=id
+	err =r.Db.Delete(&Video2D).Error
 	return err
 }

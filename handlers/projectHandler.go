@@ -399,3 +399,46 @@ func (h *ProjectHandler) DeletePicture(w http.ResponseWriter, r *http.Request)  
 	responseFormatter(200,"OK","PICTURE DELETED",&response)
 	json.NewEncoder(w).Encode(response)
 }
+
+// AddProjectVideo ...
+func (h *ProjectHandler) AddProjectVideo(w http.ResponseWriter, r *http.Request)  {
+	w.Header().Set("Content-Type", "application/json")
+	var Video2D models.Video2D
+	var response models.Response
+	err:=json.NewDecoder(r.Body).Decode(&Video2D)
+	if err != nil {
+		responseFormatter(400,"BAD REQUEST",err.Error(),&response)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+	result,err1 := h.Repo.AddProjectVideo(Video2D)
+	if err1 != nil {
+		responseFormatter(500,"INTERNAL SERVER ERROR",err1.Error(),&response)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+	responseFormatter(201,"CREATED",result.Type+" ADDED",&response)
+	json.NewEncoder(w).Encode(response)
+}
+
+// DeleteProjectVideo ...
+func (h *ProjectHandler) DeleteProjectVideo(w http.ResponseWriter, r *http.Request)  {
+	w.Header().Set("Content-Type", "application/json")
+	params := r.URL.Query()["id"]
+	var response models.Response
+	id, err := strconv.Atoi(params[0])
+
+	if err != nil {
+		responseFormatter(500,"INTERNAL SERVER ERROR",err.Error(),&response)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+	err1 := h.Repo.DeleteProjectVideo(uint(id))
+	if err1!=nil {
+		responseFormatter(404,"NOT FOUND",err1.Error(),&response)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+	responseFormatter(200,"OK","VIDEO DELETED",&response)
+	json.NewEncoder(w).Encode(response)
+}

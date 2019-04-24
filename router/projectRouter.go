@@ -28,6 +28,6 @@ func (r *ProjectRouterHandler) HandleFunctions() {
 	r.Router.HandleFunc("/api/v1/project/tagElement", r.Handler.DeleteTagElement).Methods("DELETE")
 	r.Router.HandleFunc("/api/v1/project/picture", r.Handler.AddPicture).Methods("POST")
 	r.Router.HandleFunc("/api/v1/project/picture", r.Handler.DeletePicture).Methods("DELETE")
-	// r.Router.HandleFunc("/api/v1/project/video", r.Handler.AddProjectVideo).Methods("POST")
-	// r.Router.HandleFunc("/api/v1/project/video", r.Handler.DeleteProjectVideo).Methods("DELETE")
+	r.Router.HandleFunc("/api/v1/project/video", r.Handler.AddProjectVideo).Methods("POST")
+	r.Router.HandleFunc("/api/v1/project/video", r.Handler.DeleteProjectVideo).Methods("DELETE")
 }
