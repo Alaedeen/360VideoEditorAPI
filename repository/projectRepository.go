@@ -18,6 +18,8 @@ type ProjectRepository interface {
 	DeleteElement(id uint)(error)
 	AddTag( e models.AddedTags) (models.AddedTags, error)
 	DeleteTag(id uint)(error)
+	AddTagElement( e models.TagElements) (models.TagElements, error)
+	DeleteTagElement(id uint)(error)
 }
 
 // ProjectRepo ...
@@ -137,5 +139,24 @@ func (r *ProjectRepo) DeleteTag(id uint)(error) {
 	}
 	Tag.ID=id
 	err =r.Db.Delete(&Tag).Error
+	return err
+}
+
+// AddTagElement ...
+func (r *ProjectRepo) AddTagElement( e models.TagElements) (models.TagElements, error){
+	TagElement :=e
+	err :=r.Db.Create(&TagElement).Error
+	return TagElement, err
+}
+
+// DeleteTagElement ...
+func (r *ProjectRepo) DeleteTagElement(id uint)(error) {
+	TagElement := models.TagElements{}
+	err := r.Db.First(&TagElement,id).Error
+	if err != nil {
+		return err
+	}
+	TagElement.ID=id
+	err =r.Db.Delete(&TagElement).Error
 	return err
 }
