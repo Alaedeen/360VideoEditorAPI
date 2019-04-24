@@ -14,6 +14,8 @@ type ProjectRepository interface {
 	DeleteProject(id uint)(error)
 	GetShapes(offset int,limit int) ([]models.Shape, error)
 	GetFonts(offset int,limit int) ([]models.Font, error)
+	AddElement( e models.AddedShapes) (models.AddedShapes, error)
+	DeleteElement(id uint)(error)
 }
 
 // ProjectRepo ...
@@ -96,4 +98,23 @@ func (r *ProjectRepo) GetFonts(offset int,limit int) ([]models.Font, error){
 	err :=r.Db.Offset(offset).Limit(limit).Find(&Fonts).Error
 	
 	return Fonts, err
+}
+
+// AddElement ...
+func (r *ProjectRepo) AddElement( e models.AddedShapes) (models.AddedShapes, error){
+	Element :=e
+	err :=r.Db.Create(&Element).Error
+	return Element, err
+}
+
+// DeleteElement ...
+func (r *ProjectRepo) DeleteElement(id uint)(error) {
+	element := models.AddedShapes{}
+	err := r.Db.First(&element,id).Error
+	if err != nil {
+		return err
+	}
+	element.ID=id
+	err =r.Db.Delete(&element).Error
+	return err
 }
