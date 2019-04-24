@@ -270,3 +270,46 @@ func (h *ProjectHandler) DeleteElement(w http.ResponseWriter, r *http.Request)  
 	responseFormatter(200,"OK","ELEMENT DELETED",&response)
 	json.NewEncoder(w).Encode(response)
 }
+
+// AddTag ...
+func (h *ProjectHandler) AddTag(w http.ResponseWriter, r *http.Request)  {
+	w.Header().Set("Content-Type", "application/json")
+	var Tag models.AddedTags
+	var response models.Response
+	err:=json.NewDecoder(r.Body).Decode(&Tag)
+	if err != nil {
+		responseFormatter(400,"BAD REQUEST",err.Error(),&response)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+	result,err1 := h.Repo.AddTag(Tag)
+	if err1 != nil {
+		responseFormatter(500,"INTERNAL SERVER ERROR",err1.Error(),&response)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+	responseFormatter(201,"CREATED",result.IDTag+" ADDED",&response)
+	json.NewEncoder(w).Encode(response)
+}
+
+// DeleteTag ...
+func (h *ProjectHandler) DeleteTag(w http.ResponseWriter, r *http.Request)  {
+	w.Header().Set("Content-Type", "application/json")
+	params := r.URL.Query()["id"]
+	var response models.Response
+	id, err := strconv.Atoi(params[0])
+
+	if err != nil {
+		responseFormatter(500,"INTERNAL SERVER ERROR",err.Error(),&response)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+	err1 := h.Repo.DeleteTag(uint(id))
+	if err1!=nil {
+		responseFormatter(404,"NOT FOUND",err1.Error(),&response)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+	responseFormatter(200,"OK","TAG DELETED",&response)
+	json.NewEncoder(w).Encode(response)
+}

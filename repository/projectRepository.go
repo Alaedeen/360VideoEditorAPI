@@ -16,6 +16,8 @@ type ProjectRepository interface {
 	GetFonts(offset int,limit int) ([]models.Font, error)
 	AddElement( e models.AddedShapes) (models.AddedShapes, error)
 	DeleteElement(id uint)(error)
+	AddTag( e models.AddedTags) (models.AddedTags, error)
+	DeleteTag(id uint)(error)
 }
 
 // ProjectRepo ...
@@ -116,5 +118,24 @@ func (r *ProjectRepo) DeleteElement(id uint)(error) {
 	}
 	element.ID=id
 	err =r.Db.Delete(&element).Error
+	return err
+}
+
+// AddTag ...
+func (r *ProjectRepo) AddTag( e models.AddedTags) (models.AddedTags, error){
+	Tag :=e
+	err :=r.Db.Create(&Tag).Error
+	return Tag, err
+}
+
+// DeleteTag ...
+func (r *ProjectRepo) DeleteTag(id uint)(error) {
+	Tag := models.AddedTags{}
+	err := r.Db.First(&Tag,id).Error
+	if err != nil {
+		return err
+	}
+	Tag.ID=id
+	err =r.Db.Delete(&Tag).Error
 	return err
 }
