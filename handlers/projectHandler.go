@@ -124,3 +124,32 @@ func (h *ProjectHandler) CreateProject(w http.ResponseWriter, r *http.Request)  
 	responseFormatter(201,"CREATED",result.Title+" CREATED",&response)
 	json.NewEncoder(w).Encode(response)
 }
+
+// UpdateProject ...
+func (h *ProjectHandler) UpdateProject(w http.ResponseWriter, r *http.Request)  {
+	w.Header().Set("Content-Type", "application/json")
+	params := r.URL.Query()["id"]
+	var Project models.Project
+	var response models.Response
+	err:=json.NewDecoder(r.Body).Decode(&Project)
+	if err != nil {
+		responseFormatter(400,"BAD REQUEST",err.Error(),&response)
+		json.NewEncoder(w).Encode(response)
+		return
+	} 
+	id, err1 := strconv.Atoi(params[0])
+	if err1 != nil {
+		responseFormatter(500,"INTERNAL SERVER ERROR",err1.Error(),&response)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+	err2 := h.Repo.UpdateProject(Project,uint(id))
+	if err2 !=nil {
+		responseFormatter(404,"NOT FOUND",err2.Error(),&response)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+	
+	responseFormatter(200,"OK",Project,&response)
+	json.NewEncoder(w).Encode(response)
+}

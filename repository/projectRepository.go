@@ -10,6 +10,7 @@ type ProjectRepository interface {
 	GetProjects(id uint, offset int,limit int) ([]models.Project, error)
 	GetProject(id uint) (models.Project, error)
 	CreateProject( p models.Project) (models.Project, error)
+	UpdateProject(p models.Project,id uint)(error)
 }
 
 // ProjectRepo ...
@@ -50,4 +51,16 @@ func (r *ProjectRepo) CreateProject( p models.Project) (models.Project, error){
 	Project :=p
 	err :=r.Db.Create(&Project).Error
 	return Project, err
+}
+
+// UpdateProject ...
+func (r *ProjectRepo) UpdateProject(p models.Project,id uint)(error){
+	project := models.Project{}
+	err := r.Db.First(&project,id).Error
+	if err != nil {
+		return err
+	}
+	p.ID=id
+	err1 :=r.Db.Model(&project).Updates(&p).Error
+	return err1
 }
