@@ -9,6 +9,7 @@ import (
 type ProjectRepository interface {
 	GetProjects(id uint, offset int,limit int) ([]models.Project, error)
 	GetProject(id uint) (models.Project, error)
+	CreateProject( p models.Project) (models.Project, error)
 }
 
 // ProjectRepo ...
@@ -41,7 +42,12 @@ func (r *ProjectRepo) GetProject(id uint) (models.Project, error){
 		r.Db.Model(&tag).Related(&tagElements)
 		project.TagsList[index].Shapes=tagElements
 	}
-	
-
 	return project,err
+}
+
+// CreateProject ...
+func (r *ProjectRepo) CreateProject( p models.Project) (models.Project, error){
+	Project :=p
+	err :=r.Db.Create(&Project).Error
+	return Project, err
 }

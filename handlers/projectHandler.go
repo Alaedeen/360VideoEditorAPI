@@ -91,3 +91,36 @@ func (h *ProjectHandler) GetProject(w http.ResponseWriter, r *http.Request)  {
 	responseFormatter(200,"OK",project,&response)
 	json.NewEncoder(w).Encode(response)
 }
+
+// CreateProject ...
+func (h *ProjectHandler) CreateProject(w http.ResponseWriter, r *http.Request)  {
+	w.Header().Set("Content-Type", "application/json")
+	var Project models.Project
+	var response models.Response
+	err:=json.NewDecoder(r.Body).Decode(&Project)
+	if err != nil {
+		responseFormatter(400,"BAD REQUEST",err.Error(),&response)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+	Project.Box=0
+	Project.Sphere=0
+	Project.Cone=0
+	Project.Cylinder=0
+	Project.Torus=0
+	Project.TorusKnot=0
+	Project.Dodecahedron=0
+	Project.Tetrahedron=0
+	Project.Image=0
+	Project.Tag=0
+	Project.Video2D=0
+	Project.Text=0
+	result,err1 := h.Repo.CreateProject(Project)
+	if err1 != nil {
+		responseFormatter(500,"INTERNAL SERVER ERROR",err1.Error(),&response)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+	responseFormatter(201,"CREATED",result.Title+" CREATED",&response)
+	json.NewEncoder(w).Encode(response)
+}
