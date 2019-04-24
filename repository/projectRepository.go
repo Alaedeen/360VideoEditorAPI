@@ -11,6 +11,7 @@ type ProjectRepository interface {
 	GetProject(id uint) (models.Project, error)
 	CreateProject( p models.Project) (models.Project, error)
 	UpdateProject(p models.Project,id uint)(error)
+	DeleteProject(id uint)(error)
 }
 
 // ProjectRepo ...
@@ -63,4 +64,16 @@ func (r *ProjectRepo) UpdateProject(p models.Project,id uint)(error){
 	p.ID=id
 	err1 :=r.Db.Model(&project).Updates(&p).Error
 	return err1
+}
+
+// DeleteProject ...
+func (r *ProjectRepo) DeleteProject(id uint)(error) {
+	project := models.Project{}
+	err := r.Db.First(&project,id).Error
+	if err != nil {
+		return err
+	}
+	project.ID=id
+	err =r.Db.Delete(&project).Error
+	return err
 }

@@ -153,3 +153,25 @@ func (h *ProjectHandler) UpdateProject(w http.ResponseWriter, r *http.Request)  
 	responseFormatter(200,"OK",Project,&response)
 	json.NewEncoder(w).Encode(response)
 }
+
+// DeleteProject ...
+func (h *ProjectHandler) DeleteProject(w http.ResponseWriter, r *http.Request)  {
+	w.Header().Set("Content-Type", "application/json")
+	params := r.URL.Query()["id"]
+	var response models.Response
+	id, err := strconv.Atoi(params[0])
+
+	if err != nil {
+		responseFormatter(500,"INTERNAL SERVER ERROR",err.Error(),&response)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+	err1 := h.Repo.DeleteProject(uint(id))
+	if err1!=nil {
+		responseFormatter(404,"NOT FOUND",err1.Error(),&response)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+	responseFormatter(200,"OK","PROJECT DELETED",&response)
+	json.NewEncoder(w).Encode(response)
+}
