@@ -32,9 +32,9 @@ type VideoRepo struct {
 func (r *VideoRepo) GetVideos(offset int,limit int) ([]models.Video, error){
 	 Videos := []models.Video{}
 
-	r.Db.Offset(offset).Limit(limit).Find(&Videos)
+	err :=r.Db.Offset(offset).Limit(limit).Find(&Videos).Error
 	
-	return Videos, nil
+	return Videos, err
 }
 
 // GetVideo ...

@@ -175,3 +175,55 @@ func (h *ProjectHandler) DeleteProject(w http.ResponseWriter, r *http.Request)  
 	responseFormatter(200,"OK","PROJECT DELETED",&response)
 	json.NewEncoder(w).Encode(response)
 }
+
+// GetShapes ...
+func (h *ProjectHandler) GetShapes(w http.ResponseWriter, r *http.Request)  {
+	w.Header().Set("Content-Type", "application/json")
+	var response models.Response
+	offset,err0 := strconv.Atoi(r.URL.Query()["offset"][0])
+	if err0 != nil {
+		responseFormatter(500,"INTERNAL SERVER ERROR",err0.Error(),&response)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+	limit , err:= strconv.Atoi(r.URL.Query()["limit"][0])
+	if err != nil {
+		responseFormatter(500,"INTERNAL SERVER ERROR",err.Error(),&response)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+	result,err2 := h.Repo.GetShapes(offset,limit) 
+	if err2 !=nil {
+		responseFormatter(500,"INTERNAL SERVER ERROR",err2.Error(),&response)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+	responseFormatter(200,"OK",result,&response)
+	json.NewEncoder(w).Encode(response)
+}
+
+// GetFonts ...
+func (h *ProjectHandler) GetFonts(w http.ResponseWriter, r *http.Request)  {
+	w.Header().Set("Content-Type", "application/json")
+	var response models.Response
+	offset,err0 := strconv.Atoi(r.URL.Query()["offset"][0])
+	if err0 != nil {
+		responseFormatter(500,"INTERNAL SERVER ERROR",err0.Error(),&response)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+	limit , err:= strconv.Atoi(r.URL.Query()["limit"][0])
+	if err != nil {
+		responseFormatter(500,"INTERNAL SERVER ERROR",err.Error(),&response)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+	result,err2 := h.Repo.GetFonts(offset,limit) 
+	if err2 !=nil {
+		responseFormatter(500,"INTERNAL SERVER ERROR",err2.Error(),&response)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+	responseFormatter(200,"OK",result,&response)
+	json.NewEncoder(w).Encode(response)
+}
