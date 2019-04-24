@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"crypto/sha1"
 	"github.com/jinzhu/gorm"
 	models "github.com/Alaedeen/360VideoEditorAPI/models"
 )
@@ -91,9 +92,18 @@ func (r *UserRepo) GetUser( id uint) (models.User, error){
 func (r *UserRepo) GetUserBy(keys []string, values []interface{}) (models.User, error){
 	var User models.User
 	var m map[string]interface{}
+	var password string
 	m = make(map[string]interface{})
 	for index,value := range keys{
-		m[value] = values[index]
+		if value=="password" {
+			crypt := sha1.New()
+			password= values[index].(string)
+			crypt.Write([]byte(password))
+			m[value]=crypt.Sum(nil)
+		}else {
+			m[value] = values[index]
+		}
+		
 	}
 	err := r.Db.Where(m).Find(&User).Error
 	return User,err

@@ -6,6 +6,7 @@ import (
 	"strconv"
 	models "github.com/Alaedeen/360VideoEditorAPI/models"
 	"github.com/Alaedeen/360VideoEditorAPI/repository"
+	"crypto/sha1"
 )
 
 // UserHandler ...
@@ -23,7 +24,6 @@ func userResponseFormatter(result models.User, user *models.UserResponse)  {
 	user.ID=result.ID
 	user.Name=result.Name
 	user.Email=result.Email
-	user.Password=result.Password
 	user.Roles = append(user.Roles,"user")
 	if result.Admin {
 		user.Roles = append(user.Roles,"admin")
@@ -35,7 +35,7 @@ func userResponseFormatter(result models.User, user *models.UserResponse)  {
 	user.DateOfBirth.Month=result.BirthMonth
 	user.DateOfBirth.Year=result.BirthYear
 	user.Country=result.Country
-	user.Description=result.Description
+	user.Description=result.Description 
 	user.ProfilePic=result.ProfilePic
 	user.Joined.Day=result.JoiningDay
 	user.Joined.Month=result.JoiningMonth
@@ -85,7 +85,27 @@ func userResponseFormatter(result models.User, user *models.UserResponse)  {
 	}
 }
 
-
+func userRequestFormatter(request models.UserRequest, user *models.User){
+	if request.Password!="" {
+		crypt := sha1.New()
+		crypt.Write([]byte(request.Password))
+		user.Password=crypt.Sum(nil)
+	}
+	user.Name=request.Name
+	user.Email=request.Email
+	user.Admin=request.Admin
+	user.SuperAdmin=request.SuperAdmin
+	user.BirthDay=request.BirthDay
+	user.BirthMonth=request.BirthMonth
+	user.BirthYear=request.BirthYear
+	user.Country=request.Country
+	user.Description=request.Description
+	user.ProfilePic=request.ProfilePic
+	user.JoiningDay=request.JoiningDay
+	user.JoiningMonth=request.JoiningMonth
+	user.JoiningYear=request.JoiningYear
+	user.Subscribers=request.Subscribers
+}
 
 // GetUsers ...
 func (h *UserHandler) GetUsers(w http.ResponseWriter, r *http.Request)  {
@@ -176,13 +196,15 @@ func (h *UserHandler) GetUserBy(w http.ResponseWriter, r *http.Request){
 func (h *UserHandler) CreateUser(w http.ResponseWriter, r *http.Request)  {
 	w.Header().Set("Content-Type", "application/json")
 	var User models.User
+	var UserRequest models.UserRequest
 	var response models.Response
-	err:=json.NewDecoder(r.Body).Decode(&User)
+	err:=json.NewDecoder(r.Body).Decode(&UserRequest)
 	if err != nil {
 		responseFormatter(400,"BAD REQUEST",err.Error(),&response)
 		json.NewEncoder(w).Encode(response)
 		return
 	}
+	userRequestFormatter(UserRequest,&User)
 	result,err1 := h.Repo.CreateUser(User)
 	if err1 != nil {
 		responseFormatter(500,"INTERNAL SERVER ERROR",err1.Error(),&response)
@@ -220,8 +242,9 @@ func (h *UserHandler) UpdateUser(w http.ResponseWriter, r *http.Request)  {
 	w.Header().Set("Content-Type", "application/json")
 	params := r.URL.Query()["id"]
 	var User models.User
+	var UserRequest models.UserRequest
 	var response models.Response
-	err:=json.NewDecoder(r.Body).Decode(&User)
+	err:=json.NewDecoder(r.Body).Decode(&UserRequest)
 	if err != nil {
 		responseFormatter(400,"BAD REQUEST",err.Error(),&response)
 		json.NewEncoder(w).Encode(response)
@@ -233,6 +256,7 @@ func (h *UserHandler) UpdateUser(w http.ResponseWriter, r *http.Request)  {
 		json.NewEncoder(w).Encode(response)
 		return
 	}
+	userRequestFormatter(UserRequest,&User)
 	err2 := h.Repo.UpdateUser(User,uint(id))
 	if err2 !=nil {
 		responseFormatter(404,"NOT FOUND",err2.Error(),&response)

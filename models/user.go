@@ -9,7 +9,7 @@ type User struct {
 	gorm.Model
 	Name				string 				`json:"name"`
 	Email				string 				`json:"email"`
-	Password			string 				`json:"password"`
+	Password			[]byte 				`json:"password"`
 	Admin				bool 				`json:"admin"`
 	SuperAdmin			bool 				`json:"superAdmin"`
 	BirthDay 			int					`json:"birthDay"`
@@ -33,4 +33,23 @@ type User struct {
 	Projects			[]Project			`json:"projects"`
 	ProjectVideos		[]Video2D			`json:"projectVideos"`
 	ProjectPictures		[]Picture			`json:"projectPictures"`
+}
+
+// UserRequest Struct
+type UserRequest struct {
+	Name				string 				`json:"name"`
+	Email				string 				`json:"email"`
+	Password			string 				`json:"password"`
+	Admin				bool 				`json:"admin"`
+	SuperAdmin			bool 				`json:"superAdmin"`
+	BirthDay 			int					`json:"birthDay"`
+	BirthMonth 			string				`json:"birthMonth"`
+	BirthYear 			int					`json:"birthYear"`
+	Country 			string				`json:"countryOfResidence"`
+	Description 		string				`json:"description"`
+	ProfilePic 			string				`json:"profilePic"`
+	JoiningDay 			int					`json:"joiningDay"`
+	JoiningMonth 		string				`json:"joiningMonth"`
+	JoiningYear 		int					`json:"joiningYear"`
+	Subscribers 		int					`json:"subscribers"`
 }

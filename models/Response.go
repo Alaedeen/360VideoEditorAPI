@@ -14,7 +14,6 @@ type UserResponse struct {
 	ID					uint				`json:"id"`
 	Name				string 				`json:"name"`
 	Email				string 				`json:"email"`
-	Password			string 				`json:"password"`
 	Roles				[]string 			`json:"roles"`
 	DateOfBirth 		Date				`json:"dateOfBirth"`
 	Country 			string				`json:"countryOfResidence"`
