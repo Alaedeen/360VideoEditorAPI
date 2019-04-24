@@ -356,3 +356,46 @@ func (h *ProjectHandler) DeleteTagElement(w http.ResponseWriter, r *http.Request
 	responseFormatter(200,"OK","TAG ELEMENT DELETED",&response)
 	json.NewEncoder(w).Encode(response)
 }
+
+// AddPicture ...
+func (h *ProjectHandler) AddPicture(w http.ResponseWriter, r *http.Request)  {
+	w.Header().Set("Content-Type", "application/json")
+	var Picture models.Picture
+	var response models.Response
+	err:=json.NewDecoder(r.Body).Decode(&Picture)
+	if err != nil {
+		responseFormatter(400,"BAD REQUEST",err.Error(),&response)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+	result,err1 := h.Repo.AddPicture(Picture)
+	if err1 != nil {
+		responseFormatter(500,"INTERNAL SERVER ERROR",err1.Error(),&response)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+	responseFormatter(201,"CREATED",result.Type+" ADDED",&response)
+	json.NewEncoder(w).Encode(response)
+}
+
+// DeletePicture ...
+func (h *ProjectHandler) DeletePicture(w http.ResponseWriter, r *http.Request)  {
+	w.Header().Set("Content-Type", "application/json")
+	params := r.URL.Query()["id"]
+	var response models.Response
+	id, err := strconv.Atoi(params[0])
+
+	if err != nil {
+		responseFormatter(500,"INTERNAL SERVER ERROR",err.Error(),&response)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+	err1 := h.Repo.DeletePicture(uint(id))
+	if err1!=nil {
+		responseFormatter(404,"NOT FOUND",err1.Error(),&response)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+	responseFormatter(200,"OK","PICTURE DELETED",&response)
+	json.NewEncoder(w).Encode(response)
+}
