@@ -13,7 +13,7 @@ type UserRepository interface {
 	GetUserBy(keys []string, values []interface{}) (models.User, error)
 	CreateUser( u models.User) (models.User, error)
 	DeleteUser(id uint)(error)
-	UpdateUser(u models.User,id uint)(error)
+	UpdateUser(m map[string]interface {},id uint)(error)
 	GetUserVideos(u models.User, offset int,limit int) ([]models.Video, error)
 	GetUserPictures(u models.User, offset int,limit int) ([]models.Picture, error)
 	GetUserProjectVideos(u models.User, offset int,limit int) ([]models.Video2D, error)
@@ -131,14 +131,14 @@ func (r *UserRepo) DeleteUser(id uint)(error){
 }
 
 // UpdateUser ...
-func (r *UserRepo) UpdateUser(u models.User,id uint)(error){
+func (r *UserRepo) UpdateUser(m map[string]interface {},id uint)(error){
 	user := models.User{}
 	err := r.Db.First(&user,id).Error
 	if err != nil {
 		return err
 	}
-	u.ID=id
-	err1 :=r.Db.Model(&user).Updates(&u).Error
+	user.ID=id
+	err1 :=r.Db.Model(&user).Updates(m).Error
 	return err1
 
 }

@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"io/ioutil"
 	"encoding/json"
 	"net/http"
 	"strconv"
@@ -240,31 +241,71 @@ func (h *UserHandler) DeleteUser(w http.ResponseWriter, r *http.Request)  {
 // UpdateUser ...
 func (h *UserHandler) UpdateUser(w http.ResponseWriter, r *http.Request)  {
 	w.Header().Set("Content-Type", "application/json")
+
 	params := r.URL.Query()["id"]
-	var User models.User
-	var UserRequest models.UserRequest
 	var response models.Response
-	err:=json.NewDecoder(r.Body).Decode(&UserRequest)
-	if err != nil {
-		responseFormatter(400,"BAD REQUEST",err.Error(),&response)
-		json.NewEncoder(w).Encode(response)
-		return
-	} 
 	id, err1 := strconv.Atoi(params[0])
 	if err1 != nil {
 		responseFormatter(500,"INTERNAL SERVER ERROR",err1.Error(),&response)
 		json.NewEncoder(w).Encode(response)
 		return
 	}
-	userRequestFormatter(UserRequest,&User)
-	err2 := h.Repo.UpdateUser(User,uint(id))
+	
+
+    var m map[string]interface{}
+	m = make(map[string]interface{})
+	var password string
+	r.ParseMultipartForm(10 << 20)
+	file, handler, err5 := r.FormFile("profilePicture")
+	image:=true
+	var fileType string
+    if err5 != nil {
+        image=false
+    }else{
+		defer file.Close()
+		fileType = handler.Header["Content-Type"][0]
+		fileType= fileType[6:]
+		tempFile, err3 := ioutil.TempFile("assets/profilePictures", "profilePicture_*"+strconv.Itoa(id)+"." + fileType)
+		if err3 != nil {
+			responseFormatter(500,"INTERNAL SERVER ERROR",err3.Error(),&response)
+			json.NewEncoder(w).Encode(response)
+			return
+		}
+		defer tempFile.Close()
+		fileBytes, err4 := ioutil.ReadAll(file)
+		if err4 != nil {
+			responseFormatter(500,"INTERNAL SERVER ERROR",err4.Error(),&response)
+			json.NewEncoder(w).Encode(response)
+			return
+		}
+		tempFile.Write(fileBytes)
+		m["profilePic"]= tempFile.Name()[23:]
+	}
+
+	for key,value := range r.Form {
+		if key=="password" {
+			crypt := sha1.New()
+			password= value[0]
+			crypt.Write([]byte(password))
+			m[key]=crypt.Sum(nil)
+		}else {	
+			if key!="id" {
+				m[key]=value[0]
+			}
+		}
+	}
+	
+	if image {
+		
+	}
+	err2 := h.Repo.UpdateUser(m,uint(id))
 	if err2 !=nil {
 		responseFormatter(404,"NOT FOUND",err2.Error(),&response)
 		json.NewEncoder(w).Encode(response)
 		return
 	}
 	
-	responseFormatter(200,"OK",User,&response)
+	responseFormatter(200,"OK","USER UPDATED",&response)
 	json.NewEncoder(w).Encode(response)
 }
 
