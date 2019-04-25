@@ -290,7 +290,18 @@ func (h *UserHandler) UpdateUser(w http.ResponseWriter, r *http.Request)  {
 			m[key]=crypt.Sum(nil)
 		}else {	
 			if key!="id" {
-				m[key]=value[0]
+				if value[0] == "true" {
+					m[key]= true
+				}else if value[0] == "false" {
+					m[key]= false
+				}else{
+					val, err1 := strconv.Atoi(value[0])
+					if err1 != nil {
+						m[key]=value[0]
+					}else {
+						m[key]=val
+					}
+				}
 			}
 		}
 	}
