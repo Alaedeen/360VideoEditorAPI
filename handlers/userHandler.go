@@ -257,29 +257,26 @@ func (h *UserHandler) UpdateUser(w http.ResponseWriter, r *http.Request)  {
 	var password string
 	r.ParseMultipartForm(10 << 20)
 	file, handler, err5 := r.FormFile("profilePicture")
-	image:=true
 	var fileType string
-    if err5 != nil {
-        image=false
-    }else{
+    if err5 == nil {
 		defer file.Close()
 		fileType = handler.Header["Content-Type"][0]
 		fileType= fileType[6:]
-		tempFile, err3 := ioutil.TempFile("assets/profilePictures", "profilePicture_*"+strconv.Itoa(id)+"." + fileType)
+		profilePicture, err3 := ioutil.TempFile("assets/profilePictures", "profilePicture_*"+strconv.Itoa(id)+"." + fileType)
 		if err3 != nil {
 			responseFormatter(500,"INTERNAL SERVER ERROR",err3.Error(),&response)
 			json.NewEncoder(w).Encode(response)
 			return
 		}
-		defer tempFile.Close()
+		defer profilePicture.Close()
 		fileBytes, err4 := ioutil.ReadAll(file)
 		if err4 != nil {
 			responseFormatter(500,"INTERNAL SERVER ERROR",err4.Error(),&response)
 			json.NewEncoder(w).Encode(response)
 			return
 		}
-		tempFile.Write(fileBytes)
-		m["profilePic"]= tempFile.Name()[23:]
+		profilePicture.Write(fileBytes)
+		m["profilePic"]= profilePicture.Name()[23:]
 	}
 
 	for key,value := range r.Form {
@@ -304,10 +301,6 @@ func (h *UserHandler) UpdateUser(w http.ResponseWriter, r *http.Request)  {
 				}
 			}
 		}
-	}
-	
-	if image {
-		
 	}
 	err2 := h.Repo.UpdateUser(m,uint(id))
 	if err2 !=nil {
