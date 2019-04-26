@@ -249,6 +249,40 @@ func (h *ProjectHandler) DeleteProject(w http.ResponseWriter, r *http.Request)  
 	json.NewEncoder(w).Encode(response)
 }
 
+// SaveProject ...
+func (h *ProjectHandler) SaveProject(w http.ResponseWriter, r *http.Request)  {
+	w.Header().Set("Content-Type", "text/xml")
+	var response models.Response
+	name := r.URL.Query()["name"][0]
+	err := os.Remove("assets/project/videos/script/"+name)
+    if err != nil {
+        responseFormatter(500,"INTERNAL SERVER ERROR",err.Error(),&response)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+	aFrame, err := os.Create("assets/project/videos/script/"+name)
+	if err != nil {
+		responseFormatter(500,"INTERNAL SERVER ERROR",err.Error(),&response)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+	defer aFrame.Close()
+	htmlData, err := ioutil.ReadAll(r.Body) 
+
+ 	if err != nil {
+ 		responseFormatter(500,"INTERNAL SERVER ERROR",err.Error(),&response)
+		json.NewEncoder(w).Encode(response)
+		return
+ 	}
+	_,err = aFrame.WriteString(string(htmlData))
+	if err != nil {
+		responseFormatter(500,"INTERNAL SERVER ERROR",err.Error(),&response)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+
+}
+
 // GetShapes ...
 func (h *ProjectHandler) GetShapes(w http.ResponseWriter, r *http.Request)  {
 	w.Header().Set("Content-Type", "application/json")

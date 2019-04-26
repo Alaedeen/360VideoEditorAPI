@@ -18,6 +18,7 @@ func (r *ProjectRouterHandler) HandleFunctions() {
 	r.Router.HandleFunc("/api/v1/project", r.Handler.CreateProject).Methods("POST")
 	r.Router.HandleFunc("/api/v1/project", r.Handler.UpdateProject).Methods("PUT") 
 	r.Router.HandleFunc("/api/v1/project", r.Handler.DeleteProject).Methods("DELETE")
+	r.Router.HandleFunc("/api/v1/project/save", r.Handler.SaveProject).Methods("PUT")
 	r.Router.HandleFunc("/api/v1/sahpes", r.Handler.GetShapes).Methods("GET")
 	r.Router.HandleFunc("/api/v1/fonts", r.Handler.GetFonts).Methods("GET") 
 	r.Router.HandleFunc("/api/v1/project/element", r.Handler.AddElement).Methods("POST")
