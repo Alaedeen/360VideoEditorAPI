@@ -469,12 +469,51 @@ func (h *ProjectHandler) AddPicture(w http.ResponseWriter, r *http.Request)  {
 	w.Header().Set("Content-Type", "application/json")
 	var Picture models.Picture
 	var response models.Response
-	err:=json.NewDecoder(r.Body).Decode(&Picture)
-	if err != nil {
-		responseFormatter(400,"BAD REQUEST",err.Error(),&response)
+
+	dt := time.Now().Format("01-02-2006 15:04:05")	
+	
+	r.ParseMultipartForm(10 << 20)
+	//upload the picture 
+	file, handler, err := r.FormFile("picture")
+	var fileType string
+    if err != nil {
+        responseFormatter(400,"BAD REQUEST",err.Error(),&response)
 		json.NewEncoder(w).Encode(response)
 		return
 	}
+	defer file.Close()
+	fileType = handler.Header["Content-Type"][0]
+	fileType= fileType[6:]
+	pictureFile, err3 := ioutil.TempFile("assets/project/projectPictures", "picture_*_"+dt+"." + fileType)
+	if err3 != nil {
+		responseFormatter(500,"INTERNAL SERVER ERROR",err3.Error(),&response)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+	defer pictureFile.Close()
+	fileBytes, err4 := ioutil.ReadAll(file)
+	if err4 != nil {
+		responseFormatter(500,"INTERNAL SERVER ERROR",err4.Error(),&response)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+	pictureFile.Write(fileBytes)
+
+	Picture.UserID,err=strconv.Atoi(r.Form["userId"][0])
+	if err != nil {
+		responseFormatter(500,"INTERNAL SERVER ERROR",err.Error(),&response)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+	Picture.Type=r.Form["type"][0]
+	Picture.Ratio,err=strconv.Atoi(r.Form["ratio"][0])
+	if err != nil {
+		responseFormatter(500,"INTERNAL SERVER ERROR",err.Error(),&response)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+	Picture.Src= pictureFile.Name()[31:]
+
 	result,err1 := h.Repo.AddPicture(Picture)
 	if err1 != nil {
 		responseFormatter(500,"INTERNAL SERVER ERROR",err1.Error(),&response)
