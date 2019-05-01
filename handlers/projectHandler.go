@@ -181,7 +181,7 @@ func (h *ProjectHandler) CreateProject(w http.ResponseWriter, r *http.Request)  
 	thumbnail.Write(fileBytes1)
 	
 
-	aFrame, err := os.Create("assets/project/videos/script/aframe_"+r.Form["userId"][0]+"_"+dt+".html")
+	aFrame, err := os.Create("assets/project/videos/script/aframe_"+r.Form["userId"][0]+"_"+dt+".json")
 	if err != nil {
 		responseFormatter(500,"INTERNAL SERVER ERROR",err.Error(),&response)
 		json.NewEncoder(w).Encode(response)
@@ -196,7 +196,7 @@ func (h *ProjectHandler) CreateProject(w http.ResponseWriter, r *http.Request)  
 		return
 	}
 	Project.Title=r.Form["title"][0]
-	Project.AFrame="aframe_"+r.Form["userId"][0]+"_"+dt+".html"
+	Project.AFrame="aframe_"+r.Form["userId"][0]+"_"+dt+".json"
 	Project.Video= videoFile.Name()[22:]	
 	Project.Thumbnail= thumbnail.Name()[33:]	
 	Project.Box=0
@@ -275,7 +275,7 @@ func (h *ProjectHandler) DeleteProject(w http.ResponseWriter, r *http.Request)  
 
 // SaveProject ...
 func (h *ProjectHandler) SaveProject(w http.ResponseWriter, r *http.Request)  {
-	w.Header().Set("Content-Type", "text/xml")
+	w.Header().Set("Content-Type", "text/json")
 	var response models.Response
 	name := r.URL.Query()["name"][0]
 	err := os.Remove("assets/project/videos/script/"+name)
@@ -291,14 +291,14 @@ func (h *ProjectHandler) SaveProject(w http.ResponseWriter, r *http.Request)  {
 		return
 	}
 	defer aFrame.Close()
-	htmlData, err := ioutil.ReadAll(r.Body) 
+	jsonData, err := ioutil.ReadAll(r.Body) 
 
  	if err != nil {
  		responseFormatter(500,"INTERNAL SERVER ERROR",err.Error(),&response)
 		json.NewEncoder(w).Encode(response)
 		return
  	}
-	_,err = aFrame.WriteString(string(htmlData))
+	_,err = aFrame.WriteString(string(jsonData))
 	if err != nil {
 		responseFormatter(500,"INTERNAL SERVER ERROR",err.Error(),&response)
 		json.NewEncoder(w).Encode(response)
