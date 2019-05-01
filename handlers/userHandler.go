@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"github.com/Alaedeen/360VideoEditorAPI/helpers"
 	"io/ioutil"
 	"encoding/json"
 	"net/http"
@@ -193,6 +194,38 @@ func (h *UserHandler) GetUserBy(w http.ResponseWriter, r *http.Request){
 	json.NewEncoder(w).Encode(response)
 }
 
+// Login ...
+func (h *UserHandler) Login(w http.ResponseWriter, r *http.Request){
+	w.Header().Set("Content-Type", "application/json")
+	params:= r.URL.Query()
+	var keys []string
+	var values []interface{}
+	var response models.Response
+	for key,value := range params {
+		keys = append(keys,key)
+		val , err := strconv.Atoi(value[0])
+		if err != nil {
+			values = append(values, value[0])
+		}else{
+			values = append(values, uint(val))
+		}
+	}
+	result,err:= h.Repo.GetUserBy(keys,values)
+	if err != nil {
+		responseFormatter(404,"NOT FOUND",err.Error(),&response)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+	var user models.UserResponse
+	userResponseFormatter(result,&user)
+	token,err:= helpers.GenerateJWT(result.Name)
+	responseFormatter(200,"OK",user,&response)
+	var responseWithToken  models.ResponseWithToken
+	responseWithToken.Response=response
+	responseWithToken.Token=token
+	json.NewEncoder(w).Encode(responseWithToken)
+}
+
 // CreateUser ...
 func (h *UserHandler) CreateUser(w http.ResponseWriter, r *http.Request)  {
 	w.Header().Set("Content-Type", "application/json")
@@ -212,8 +245,16 @@ func (h *UserHandler) CreateUser(w http.ResponseWriter, r *http.Request)  {
 		json.NewEncoder(w).Encode(response)
 		return
 	}
-	responseFormatter(201,"CREATED",result.Name+" CREATED",&response)
-	json.NewEncoder(w).Encode(response)
+	var user models.UserResponse
+	userResponseFormatter(result,&user)
+	token,err:= helpers.GenerateJWT(result.Name)
+	responseFormatter(201,"CREATED",user,&response)
+	var responseWithToken  models.ResponseWithToken
+	responseWithToken.Response=response
+	responseWithToken.Token=token
+	
+	
+	json.NewEncoder(w).Encode(responseWithToken)
 }
 
 // DeleteUser ...
