@@ -64,6 +64,8 @@ func main()  {
 	projectHandler := handlers.ProjectHandler{&projectRepo}
 	// Init Router 
 	r := mux.NewRouter()
+	// serve static files
+	r.PathPrefix("/assets/").Handler(http.StripPrefix("/assets/",http.FileServer(http.Dir("./assets/"))))
 	UserRouterHandler := router.UserRouterHandler{Router: r,Handler: userHandler}
 	UserRouterHandler.HandleFunctions()
 	VideoRouterHandler := router.VideoRouterHandler{Router: r,Handler: videoHandler}
