@@ -95,6 +95,30 @@ func (h *ProjectHandler) GetProject(w http.ResponseWriter, r *http.Request)  {
 	json.NewEncoder(w).Encode(response)
 }
 
+// LoadProjectScript ...
+func (h *ProjectHandler) LoadProjectScript(w http.ResponseWriter, r *http.Request)  {
+	w.Header().Set("Content-Type", "application/json")
+	fileName := r.URL.Query()["file"][0]
+	var response models.Response
+	var project models.Script
+	script, err := ioutil.ReadFile("assets/project/videos/script/"+fileName)
+	if err != nil {
+		responseFormatter(500,"INTERNAL SERVER ERROR",err.Error(),&response)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+	err = json.Unmarshal([]byte(script), &project)
+	if err != nil {
+		responseFormatter(500,"INTERNAL SERVER ERROR",err.Error(),&response)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+	responseFormatter(200,"OK",project ,&response)
+	json.NewEncoder(w).Encode(response)
+
+	
+}
+
 // CreateProject ...
 func (h *ProjectHandler) CreateProject(w http.ResponseWriter, r *http.Request)  {
 	w.Header().Set("Content-Type", "application/json")

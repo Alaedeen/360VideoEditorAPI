@@ -119,3 +119,40 @@ type ProjectResponse struct {
 	ShapesList		[]AddedShapes 	`json:"shapesList"`
 	TagsList		[]AddedTags		`json:"tagsList"`
 }
+
+// Script struct
+type Script struct {
+	Aentity 		AEntity 		`json:"a-entity,omitempty"`
+	AvideoSphere 	AVideoSphere	`json:"a-videosphere,omitempty"`
+}
+
+// AEntity struct
+type AEntity struct {
+	Elements	[]AElement	`json:"a-text,omitempty"`
+}
+
+// AVideoSphere struct
+type AVideoSphere struct {
+	Elements []AElement	`json:"elements,omitempty"`
+}
+
+// AElement struct
+type AElement struct {
+	TagName		string		`json:"tagName,omitempty"`
+	Position	string	`json:"position,omitempty"`
+	Rotation	string	`json:"rotation,omitempty"`
+	ID			string		`json:"id,omitempty"`
+	Scale		string	`json:"scale,omitempty"`
+	Class		string		`json:"class,omitempty"`
+	StartTime	string		`json:"starttime,omitempty"`
+	EndTime		string		`json:"endtime,omitempty"`
+	Toggle		string		`json:"toggle-visibility,omitempty"`
+	Animation	string		`json:"animation,omitempty"`
+	Rotate		string		`json:"rotate,omitempty"`
+	SRC			string		`json:"src,omitempty"`
+	Width		string		`json:"width,omitempty"`
+	Height		string		`json:"height,omitempty"`
+	Font		string		`json:"font,omitempty"`
+	Text 		string		`json:"text,omitempty"`
+	Value		string		`json:"value,omitempty"`
+}
