@@ -14,6 +14,7 @@ import (
 	"github.com/spf13/viper"
 	"github.com/Alaedeen/360VideoEditorAPI/config"
 	router "github.com/Alaedeen/360VideoEditorAPI/router"
+	"github.com/rs/cors"
 )
 
 
@@ -21,6 +22,12 @@ import (
 
 
 func main()  {
+	c := cors.New(cors.Options{
+		AllowedOrigins: []string{"http://localhost", "http://localhost:8082"},
+		AllowCredentials: true,
+		// Enable Debugging for testing, consider disabling in production
+		Debug: true,
+	})
 	viper.SetConfigName("config")
 	viper.AddConfigPath(".")
 	var configuration config.Configuration
@@ -74,5 +81,7 @@ func main()  {
 	ProjectRouterHandler.HandleFunctions()
 	// start server
 	port := ":" + strconv.Itoa(configuration.Server.Port) 
-	log.Fatal(http.ListenAndServe(port,r))
+	handler := c.Handler(r)
+
+	log.Fatal(http.ListenAndServe(port,handler))
 }
