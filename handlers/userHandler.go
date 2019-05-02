@@ -311,7 +311,7 @@ func (h *UserHandler) GetUserVideos(w http.ResponseWriter, r *http.Request)  {
 	var video models.VideoResponse
 	for _,res := range result {
 		
-	video = videoResponseFormatter(res)
+	video = helpers.VideoResponseFormatter(res)
 		videos= append(videos,video)
 	} 
 	responseFormatter(200,"OK",videos,&response)

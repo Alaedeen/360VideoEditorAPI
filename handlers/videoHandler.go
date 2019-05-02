@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"github.com/Alaedeen/360VideoEditorAPI/helpers"
 	"encoding/json"
 	"net/http"
 	"strconv"
@@ -12,70 +13,7 @@ import (
 type VideoHandler struct {
 	Repo repository.VideoRepository
 }
-func replyResponseFormatter(result models.Reply, reply *models.ReplyResponse)  {
-	reply.ID=result.ID
-	reply.UserID=result.UserID
-	reply.CommentID=result.CommentID
-	reply.ReplyDate.Day=result.Day
-	reply.ReplyDate.Month=result.Month
-	reply.ReplyDate.Year=result.Year
-	reply.NameUser=result.NameUser
-	reply.ProfilePic=result.ProfilePic
-	reply.Text=result.Text
-	reply.Likes=result.Likes
-	reply.Dislikes=result.Dislikes
-}
-func commentResponseFormatter(result models.Comment, comment *models.CommentResponse)  {
-	comment.ID=result.ID
-	comment.UserID=result.UserID
-	comment.VideoID=result.VideoID
-	comment.CommentDate.Day=result.Day
-	comment.CommentDate.Month=result.Month
-	comment.CommentDate.Year=result.Year
-	comment.NameUser=result.NameUser
-	comment.ProfilePic=result.ProfilePic
-	comment.Text=result.Text
-	comment.Likes=result.Likes
-	comment.Dislikes=result.Dislikes
-	var reply models.ReplyResponse
-	comment.Replies= comment.Replies[:0]
-	if len(result.Replies)==0 {
-		comment.Replies = []models.ReplyResponse{}
-	}
-	for _, rep := range result.Replies {
-		replyResponseFormatter(rep,&reply)
-		comment.Replies = append(comment.Replies, reply)
-	}
-	
-}
-func videoResponseFormatter(result models.Video) models.VideoResponse {
-	video := models.VideoResponse{}
-	video.ID=result.ID
-	video.UserID=result.UserID
-	video.Title=result.Title
-	video.UploadDate.Day=result.UploadDay
-	video.UploadDate.Month=result.UploadMonth
-	video.UploadDate.Year=result.UploadYear
-	video.Thumbnail=result.Thumbnail
-	video.Src=result.Src
-	video.AFrame=result.AFrame
-	video.Likes=result.Likes
-	video.Dislikes=result.Dislikes
-	video.Views=result.Views
-	// var comment models.CommentResponse
-	if result.Comments!=nil {
-		rs := []models.CommentResponse{}
-		for _, com := range result.Comments {
-			comment := models.CommentResponse{}
-			commentResponseFormatter(com,&comment)
-			rs = append(rs, comment)
-		}
-		video.Comments = rs	
-	}
 
-	return video
-
-}
 
 // GetVideos ...
 func (h *VideoHandler) GetVideos(w http.ResponseWriter, r *http.Request)  {
@@ -104,7 +42,7 @@ func (h *VideoHandler) GetVideos(w http.ResponseWriter, r *http.Request)  {
 	var video models.VideoResponse
 	for _,res := range result {
 		
-	video = videoResponseFormatter(res)
+	video = helpers.VideoResponseFormatter(res)
 		videos= append(videos,video)
 	} 
 	responseFormatter(200,"OK",videos,&response)
@@ -128,8 +66,8 @@ func (h *VideoHandler) GetVideo(w http.ResponseWriter, r *http.Request)  {
 		json.NewEncoder(w).Encode(response)
 		return
 	}
-	
-	video := videoResponseFormatter(result)
+
+	video := helpers.VideoResponseFormatter(result)
 	responseFormatter(200,"OK",video,&response)
 	json.NewEncoder(w).Encode(response)
 }
