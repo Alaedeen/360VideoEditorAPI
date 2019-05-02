@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"github.com/Alaedeen/360VideoEditorAPI/helpers"
 	"io/ioutil"
 	"time"
 	"os"
@@ -16,29 +17,6 @@ type ProjectHandler struct {
 	Repo repository.ProjectRepository
 }
 
-func projectResponseFormatter(result models.Project, project *models.ProjectResponse){
-	project.ID= result.ID
-	project.UserID=result.UserID
-	project.Title=result.Title
-	project.Thumbnail=result.Thumbnail
-	project.AFrame=result.AFrame
-	project.Video=result.Video
-	project.Tag=result.Tag
-	project.ShapesList=result.ShapesList
-	project.TagsList=result.TagsList
-	project.Shapes=make(map[string]int)
-	project.Shapes["box"]=result.Box
-	project.Shapes["sphere"]=result.Sphere
-	project.Shapes["cylinder"]=result.Cylinder
-	project.Shapes["torus"]=result.Torus
-	project.Shapes["torus-knot"]=result.TorusKnot
-	project.Shapes["dodecahedron"]=result.Dodecahedron
-	project.Shapes["tetrahedron"]=result.Tetrahedron
-	project.Shapes["image"]=result.Image
-	project.Shapes["video"]=result.Video2D
-	project.Shapes["text"]=result.Text
-	project.Shapes["cone"]=result.Cone
-}
 
 // GetProjects ...
 func (h *ProjectHandler) GetProjects(w http.ResponseWriter, r *http.Request)  {
@@ -90,7 +68,7 @@ func (h *ProjectHandler) GetProject(w http.ResponseWriter, r *http.Request)  {
 		return
 	}
 	var project models.ProjectResponse
-	projectResponseFormatter(result,&project)
+	helpers.ProjectResponseFormatter(result,&project)
 	responseFormatter(200,"OK",project,&response)
 	json.NewEncoder(w).Encode(response)
 }
