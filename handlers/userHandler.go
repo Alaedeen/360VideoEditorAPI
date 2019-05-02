@@ -218,7 +218,15 @@ func (h *UserHandler) Login(w http.ResponseWriter, r *http.Request){
 	}
 	var user models.UserResponse
 	userResponseFormatter(result,&user)
-	token,err:= helpers.GenerateJWT(result.Name)
+	var role string
+	if len(user.Roles)==1 {
+		role = "user"
+	}else if len(user.Roles)==2 {
+		role = "admin"
+	}else{
+		role = "super admin"
+	}
+	token,err:= helpers.GenerateJWT(result.Name,role)
 	responseFormatter(200,"OK",user,&response)
 	var responseWithToken  models.ResponseWithToken
 	responseWithToken.Response=response
@@ -247,7 +255,7 @@ func (h *UserHandler) CreateUser(w http.ResponseWriter, r *http.Request)  {
 	}
 	var user models.UserResponse
 	userResponseFormatter(result,&user)
-	token,err:= helpers.GenerateJWT(result.Name)
+	token,err:= helpers.GenerateJWT(result.Name , "user")
 	responseFormatter(201,"CREATED",user,&response)
 	var responseWithToken  models.ResponseWithToken
 	responseWithToken.Response=response
