@@ -153,24 +153,30 @@ func (h *UserHandler) CreateUser(w http.ResponseWriter, r *http.Request)  {
 	var User models.User
 	var UserRequest models.UserRequest
 	var response models.Response
+	var responseWithToken  models.ResponseWithToken
 	err:=json.NewDecoder(r.Body).Decode(&UserRequest)
 	if err != nil {
 		responseFormatter(400,"BAD REQUEST",err.Error(),&response)
-		json.NewEncoder(w).Encode(response)
+		responseWithToken.Response=response
+		responseWithToken.Token=""
+	
+		json.NewEncoder(w).Encode(responseWithToken)
 		return
 	}
 	helpers.UserRequestFormatter(UserRequest,&User)
 	result,err1 := h.Repo.CreateUser(User)
 	if err1 != nil {
 		responseFormatter(500,"INTERNAL SERVER ERROR",err1.Error(),&response)
-		json.NewEncoder(w).Encode(response)
+		responseWithToken.Response=response
+		responseWithToken.Token=""
+	
+		json.NewEncoder(w).Encode(responseWithToken)
 		return
 	}
 	var user models.UserResponse
 	helpers.UserResponseFormatter(result,&user)
 	token,err:= helpers.GenerateJWT(result.Name , "user")
 	responseFormatter(201,"CREATED",user,&response)
-	var responseWithToken  models.ResponseWithToken
 	responseWithToken.Response=response
 	responseWithToken.Token=token
 	

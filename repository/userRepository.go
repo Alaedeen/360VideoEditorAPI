@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"errors"
 	"crypto/sha1"
 	"github.com/jinzhu/gorm"
 	models "github.com/Alaedeen/360VideoEditorAPI/models"
@@ -112,7 +113,16 @@ func (r *UserRepo) GetUserBy(keys []string, values []interface{}) (models.User, 
 // CreateUser ...
 func (r *UserRepo) CreateUser(u models.User) (models.User, error){
 	User :=u
-	err :=r.Db.Create(&User).Error
+	var user models.User
+	err:= r.Db.Where(map[string]interface{}{"name": u.Name}).Find(&user).Error
+	if err == nil {
+		return user, errors.New("ERROR: name already used")
+	}
+	err= r.Db.Where(map[string]interface{}{"email": u.Email}).Find(&user).Error
+	if err == nil {
+		return user, errors.New("ERROR: mail already used")
+	}
+	err =r.Db.Create(&User).Error
 	return User, err
 }
 
