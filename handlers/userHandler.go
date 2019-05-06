@@ -113,6 +113,7 @@ func (h *UserHandler) Login(w http.ResponseWriter, r *http.Request){
 	params:= r.URL.Query()
 	var keys []string
 	var values []interface{}
+	var responseWithToken  models.ResponseWithToken
 	var response models.Response
 	for key,value := range params {
 		keys = append(keys,key)
@@ -126,7 +127,10 @@ func (h *UserHandler) Login(w http.ResponseWriter, r *http.Request){
 	result,err:= h.Repo.GetUserBy(keys,values)
 	if err != nil {
 		responseFormatter(404,"NOT FOUND",err.Error(),&response)
-		json.NewEncoder(w).Encode(response)
+		responseWithToken.Response=response
+		responseWithToken.Token=""
+	
+		json.NewEncoder(w).Encode(responseWithToken)
 		return
 	}
 	var user models.UserResponse
@@ -141,7 +145,6 @@ func (h *UserHandler) Login(w http.ResponseWriter, r *http.Request){
 	}
 	token,err:= helpers.GenerateJWT(result.Name,role)
 	responseFormatter(200,"OK",user,&response)
-	var responseWithToken  models.ResponseWithToken
 	responseWithToken.Response=response
 	responseWithToken.Token=token
 	json.NewEncoder(w).Encode(responseWithToken)
