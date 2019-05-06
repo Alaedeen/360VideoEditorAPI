@@ -25,6 +25,7 @@ func main()  {
 	c := cors.New(cors.Options{
 		AllowedOrigins: []string{"http://localhost", "http://localhost:8082"},
 		AllowCredentials: true,
+		AllowedHeaders: []string{"Authorization"},
 		// Enable Debugging for testing, consider disabling in production
 		Debug: true,
 	})

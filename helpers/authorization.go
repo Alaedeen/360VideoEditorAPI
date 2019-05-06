@@ -12,9 +12,9 @@ import (
 func IsAuthorized(endpoint func(http.ResponseWriter, *http.Request)) http.Handler {
     return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 
-        if r.Header["Token"] != nil {
+        if r.Header.Get("Authorization")[7:] != "" {
 
-            token, err := jwt.Parse(r.Header["Token"][0], func(token *jwt.Token) (interface{}, error) {
+            token, err := jwt.Parse(r.Header.Get("Authorization")[7:], func(token *jwt.Token) (interface{}, error) {
                 if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
                     return nil, fmt.Errorf("There was an error")
                 }
