@@ -72,7 +72,23 @@ func (h *UserHandler) GetUsersByName(w http.ResponseWriter, r *http.Request){
 	role:= r.URL.Query()["role"][0]
 	var response models.Response
 	var responseWithCount models.ResponseWithCount
-	result,err,count:= h.Repo.GetUsersByName(name,role)
+	offset,err0 := strconv.Atoi(r.URL.Query()["offset"][0])
+	if err0 != nil {
+		responseFormatter(500,"INTERNAL SERVER ERROR",err0.Error(),&response)
+		responseWithCount.Response=response
+		responseWithCount.Count=0
+		json.NewEncoder(w).Encode(responseWithCount)
+		return
+	}
+	limit , err:= strconv.Atoi(r.URL.Query()["limit"][0])
+	if err != nil {
+		responseFormatter(500,"INTERNAL SERVER ERROR",err.Error(),&response)
+		responseWithCount.Response=response
+		responseWithCount.Count=0
+		json.NewEncoder(w).Encode(responseWithCount)
+		return
+	}
+	result,err,count:= h.Repo.GetUsersByName(name,role,offset,limit)
 	if err != nil {
 		responseFormatter(404,"NOT FOUND",err.Error(),&response)
 		responseWithCount.Response=response
