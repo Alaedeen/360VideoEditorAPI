@@ -15,6 +15,7 @@ type UserRouterHandler struct {
 func (r *UserRouterHandler) HandleFunctions() {
 	// Route Handlers / Endpoints  
 	r.Router.Handle("/api/v1/users", helpers.IsAuthorized(r.Handler.GetUsers)).Methods("GET")
+	r.Router.Handle("/api/v1/usersbyname", helpers.IsAuthorized(r.Handler.GetUsersByName)).Methods("GET")
 	r.Router.HandleFunc("/api/v1/user", r.Handler.GetUser).Methods("GET")
 	r.Router.Handle("/api/v1/userby", helpers.IsAuthorized(r.Handler.GetUserBy)).Methods("GET")
 	r.Router.HandleFunc("/api/v1/login", r.Handler.Login).Methods("GET")

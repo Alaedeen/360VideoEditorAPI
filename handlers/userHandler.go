@@ -39,13 +39,17 @@ func (h *UserHandler) GetUsers(w http.ResponseWriter, r *http.Request)  {
 	limit , err:= strconv.Atoi(r.URL.Query()["limit"][0])
 	if err != nil {
 		responseFormatter(500,"INTERNAL SERVER ERROR",err.Error(),&response)
-		json.NewEncoder(w).Encode(response)
+		responseWithCount.Response=response
+		responseWithCount.Count=0
+		json.NewEncoder(w).Encode(responseWithCount)
 		return
 	}
 	result,err1,count := h.Repo.GetUsers(role,offset,limit) 
 	if err1 !=nil {
 		responseFormatter(500,"INTERNAL SERVER ERROR",err1.Error(),&response)
-		json.NewEncoder(w).Encode(response)
+		responseWithCount.Response=response
+		responseWithCount.Count=0
+		json.NewEncoder(w).Encode(responseWithCount)
 		return
 	}
 	var users []models.UserResponse
@@ -60,6 +64,35 @@ func (h *UserHandler) GetUsers(w http.ResponseWriter, r *http.Request)  {
 	responseWithCount.Count=count
 	json.NewEncoder(w).Encode(responseWithCount)
 }
+
+// GetUsersByName ...
+func (h *UserHandler) GetUsersByName(w http.ResponseWriter, r *http.Request){
+	w.Header().Set("Content-Type", "application/json")
+	name:= r.URL.Query()["name"][0]
+	role:= r.URL.Query()["role"][0]
+	var response models.Response
+	var responseWithCount models.ResponseWithCount
+	result,err,count:= h.Repo.GetUsersByName(name,role)
+	if err != nil {
+		responseFormatter(404,"NOT FOUND",err.Error(),&response)
+		responseWithCount.Response=response
+		responseWithCount.Count=0
+		json.NewEncoder(w).Encode(responseWithCount)
+		return
+	}
+	var users []models.UserResponse
+	var user models.UserResponse
+	for _,res := range result {
+		user.Roles= user.Roles[:0]
+		helpers.UserResponseFormatter(res,&user)
+		users= append(users,user)
+	} 
+	responseFormatter(200,"OK",users,&response)
+	responseWithCount.Response=response
+	responseWithCount.Count=count
+	json.NewEncoder(w).Encode(responseWithCount)
+}
+
 
 // GetUser ...
 func (h *UserHandler) GetUser(w http.ResponseWriter, r *http.Request)  {

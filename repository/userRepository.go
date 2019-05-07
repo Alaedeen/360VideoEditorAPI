@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"strings"
 	"errors"
 	"crypto/sha1"
 	"github.com/jinzhu/gorm"
@@ -10,6 +11,7 @@ import (
 // UserRepository ...
 type UserRepository interface {
 	GetUsers(role string, offset int,limit int) ([]models.User, error, int)
+	GetUsersByName(name string, role string) ([]models.User, error, int)
 	GetUser(id uint) (models.User, error)
 	GetUserBy(keys []string, values []interface{}) (models.User, error)
 	CreateUser( u models.User) (models.User, error)
@@ -59,6 +61,27 @@ func (r *UserRepo) GetUsers(role string,offset int,limit int) ([]models.User, er
 	}else{
 		err=r.Db.Where("admin = ? AND super_admin = ?", true, true).Offset(offset).Limit(limit).Find(&Users).Error
 		r.Db.Model(&User).Where("admin = ? AND super_admin = ?", true, true).Count(&count)
+	}
+	
+	
+	return Users, err, count
+}
+
+// GetUsersByName ...
+func (r *UserRepo) GetUsersByName(name string, role string) ([]models.User, error, int){
+	 var Users []models.User
+	 var User models.User
+	 var count int
+	 var err error
+	if role=="user" {
+		err=r.Db.Where("admin = ? AND UPPER(name) LIKE ?", false, "%"+strings.ToUpper(name)+"%").Find(&Users).Error
+		r.Db.Model(&User).Where("admin = ? AND UPPER(name) LIKE ?", false, "%"+strings.ToUpper(name)+"%").Count(&count)
+	}else if role == "admin"{
+		err=r.Db.Where("admin = ? AND super_admin = ? AND UPPER(name) LIKE ?", true, false, "%"+strings.ToUpper(name)+"%").Find(&Users).Error
+		r.Db.Model(&User).Where("admin = ? AND super_admin = ? AND UPPER(name) LIKE ?", true, false, "%"+strings.ToUpper(name)+"%").Count(&count)
+	}else{
+		err=r.Db.Where("admin = ? AND super_admin = ? AND UPPER(name) LIKE ?", true, true, "%"+strings.ToUpper(name)+"%").Find(&Users).Error
+		r.Db.Model(&User).Where("admin = ? AND super_admin = ? AND UPPER(name) LIKE ?", true, true, "%"+strings.ToUpper(name)+"%").Count(&count)
 	}
 	
 	
