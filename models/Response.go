@@ -162,3 +162,9 @@ type ResponseWithToken struct {
 	Response	Response	`json:"response"`
 	Token		string		`json:"token"`
 }
+
+// ResponseWithCount struct
+type ResponseWithCount struct {
+	Response	Response		`json:"response"`
+	Count		int 			`json:"count"`
+}

@@ -9,7 +9,7 @@ import (
 
 // UserRepository ...
 type UserRepository interface {
-	GetUsers(role string, offset int,limit int) ([]models.User, error)
+	GetUsers(role string, offset int,limit int) ([]models.User, error, int)
 	GetUser(id uint) (models.User, error)
 	GetUserBy(keys []string, values []interface{}) (models.User, error)
 	CreateUser( u models.User) (models.User, error)
@@ -45,19 +45,24 @@ type UserRepo struct {
 
 
 // GetUsers ...
-func (r *UserRepo) GetUsers(role string,offset int,limit int) ([]models.User, error){
+func (r *UserRepo) GetUsers(role string,offset int,limit int) ([]models.User, error, int){
 	 var Users []models.User
+	 var User models.User
+	 var count int
 	 var err error
 	if role=="user" {
 		err=r.Db.Where("admin = ?", false).Offset(offset).Limit(limit).Find(&Users).Error
+		r.Db.Model(&User).Where("admin = ?", false).Count(&count)
 	}else if role == "admin"{
 		err=r.Db.Where("admin = ? AND super_admin = ?", true, false).Offset(offset).Limit(limit).Find(&Users).Error
+		r.Db.Model(&User).Where("admin = ? AND super_admin = ?", true, false).Count(&count)
 	}else{
 		err=r.Db.Where("admin = ? AND super_admin = ?", true, true).Offset(offset).Limit(limit).Find(&Users).Error
+		r.Db.Model(&User).Where("admin = ? AND super_admin = ?", true, true).Count(&count)
 	}
 	
 	
-	return Users, err
+	return Users, err, count
 }
 
 // GetUser ...

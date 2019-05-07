@@ -26,11 +26,14 @@ func responseFormatter (code int, status string, data interface{}, response *mod
 func (h *UserHandler) GetUsers(w http.ResponseWriter, r *http.Request)  {
 	w.Header().Set("Content-Type", "application/json")
 	var response models.Response
+	var responseWithCount models.ResponseWithCount
 	role := r.URL.Query()["role"][0]
 	offset,err0 := strconv.Atoi(r.URL.Query()["offset"][0])
 	if err0 != nil {
 		responseFormatter(500,"INTERNAL SERVER ERROR",err0.Error(),&response)
-		json.NewEncoder(w).Encode(response)
+		responseWithCount.Response=response
+		responseWithCount.Count=0
+		json.NewEncoder(w).Encode(responseWithCount)
 		return
 	}
 	limit , err:= strconv.Atoi(r.URL.Query()["limit"][0])
@@ -39,7 +42,7 @@ func (h *UserHandler) GetUsers(w http.ResponseWriter, r *http.Request)  {
 		json.NewEncoder(w).Encode(response)
 		return
 	}
-	result,err1 := h.Repo.GetUsers(role,offset,limit) 
+	result,err1,count := h.Repo.GetUsers(role,offset,limit) 
 	if err1 !=nil {
 		responseFormatter(500,"INTERNAL SERVER ERROR",err1.Error(),&response)
 		json.NewEncoder(w).Encode(response)
@@ -53,7 +56,9 @@ func (h *UserHandler) GetUsers(w http.ResponseWriter, r *http.Request)  {
 		users= append(users,user)
 	} 
 	responseFormatter(200,"OK",users,&response)
-	json.NewEncoder(w).Encode(response)
+	responseWithCount.Response=response
+	responseWithCount.Count=count
+	json.NewEncoder(w).Encode(responseWithCount)
 }
 
 // GetUser ...
