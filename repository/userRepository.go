@@ -171,7 +171,15 @@ func (r *UserRepo) DeleteUser(id uint)(error){
 // UpdateUser ...
 func (r *UserRepo) UpdateUser(m map[string]interface {},id uint)(error){
 	user := models.User{}
-	err := r.Db.First(&user,id).Error
+	err:= r.Db.Where("name = ? AND id != ?",m["name"],id).Find(&user).Error
+	if err == nil {
+		return errors.New("ERROR: name already used")
+	}
+	err= r.Db.Where("email = ? AND id != ?",m["email"],id).Find(&user).Error
+	if err == nil {
+		return errors.New("ERROR: mail already used")
+	}
+	err = r.Db.First(&user,id).Error
 	if err != nil {
 		return err
 	}

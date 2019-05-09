@@ -329,7 +329,7 @@ func (h *UserHandler) UpdateUser(w http.ResponseWriter, r *http.Request)  {
 	}
 	err2 := h.Repo.UpdateUser(m,uint(id))
 	if err2 !=nil {
-		responseFormatter(404,"NOT FOUND",err2.Error(),&response)
+		responseFormatter(500,"INTERNAL SERVER ERROR",err2.Error(),&response)
 		json.NewEncoder(w).Encode(response)
 		return
 	}
