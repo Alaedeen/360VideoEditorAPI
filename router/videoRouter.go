@@ -14,7 +14,8 @@ type VideoRouterHandler struct {
 // HandleFunctions ...
 func (r *VideoRouterHandler) HandleFunctions() {
 	// Route Handlers / Endpoints  
-	r.Router.HandleFunc("/api/v1/videos", r.Handler.GetVideos).Methods("GET")
+	r.Router.HandleFunc("/api/v1/videos", r.Handler.GetVideos).Methods("GET") 
+	r.Router.HandleFunc("/api/v1/videosByTitle", r.Handler.GetVideosByTitle).Methods("GET")
 	r.Router.HandleFunc("/api/v1/video", r.Handler.GetVideo).Methods("GET")
 	r.Router.Handle("/api/v1/video", helpers.IsAuthorized(r.Handler.AddVideo)).Methods("POST") 
 	r.Router.Handle("/api/v1/video", helpers.IsAuthorized(r.Handler.DeleteVideo)).Methods("DELETE")

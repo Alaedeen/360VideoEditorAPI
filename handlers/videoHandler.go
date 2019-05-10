@@ -58,6 +58,50 @@ func (h *VideoHandler) GetVideos(w http.ResponseWriter, r *http.Request)  {
 	json.NewEncoder(w).Encode(responseWithCount)
 }
 
+// GetVideosByTitle ...
+func (h *VideoHandler) GetVideosByTitle(w http.ResponseWriter, r *http.Request){
+	w.Header().Set("Content-Type", "application/json")
+	var response models.Response
+	var responseWithCount models.ResponseWithCount
+	title := r.URL.Query()["title"][0]
+	offset,err0 := strconv.Atoi(r.URL.Query()["offset"][0])
+	if err0 != nil {
+		responseFormatter(500,"INTERNAL SERVER ERROR",err0.Error(),&response)
+		responseWithCount.Response=response
+		responseWithCount.Count=0
+		json.NewEncoder(w).Encode(responseWithCount)
+		return
+	}
+	limit , err:= strconv.Atoi(r.URL.Query()["limit"][0])
+	if err != nil {
+		responseFormatter(500,"INTERNAL SERVER ERROR",err.Error(),&response)
+		responseWithCount.Response=response
+		responseWithCount.Count=0
+		json.NewEncoder(w).Encode(responseWithCount)
+		return
+	}
+	result,err1,count := h.Repo.GetVideosByTitle(title,offset,limit)
+	if err1 !=nil {
+		responseFormatter(500,"INTERNAL SERVER ERROR",err1.Error(),&response)
+		responseWithCount.Response=response
+		responseWithCount.Count=0
+		json.NewEncoder(w).Encode(responseWithCount)
+		return
+	}
+
+	var videos	[]models.VideoResponse
+	var video models.VideoResponse
+	for _,res := range result {
+		
+	video = helpers.VideoResponseFormatter(res)
+		videos= append(videos,video)
+	} 
+	responseFormatter(200,"OK",videos,&response)
+	responseWithCount.Response=response
+	responseWithCount.Count=count
+	json.NewEncoder(w).Encode(responseWithCount)
+}
+
 // GetVideo ...
 func (h *VideoHandler) GetVideo(w http.ResponseWriter, r *http.Request)  {
 	w.Header().Set("Content-Type", "application/json")

@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"strings"
 	// "fmt"
 	"github.com/jinzhu/gorm"
 	models "github.com/Alaedeen/360VideoEditorAPI/models"
@@ -9,6 +10,7 @@ import (
 // VideoRepository ...
 type VideoRepository interface {
 	GetVideos(offset int,limit int) ([]models.Video, error, int)
+	GetVideosByTitle(title string, offset int,limit int) ([]models.Video, error, int)
 	GetVideo(id uint) (models.Video, error)
 	AddVideo( v models.Video) (models.Video, error)
 	DeleteVideo(id uint)(error)
@@ -35,6 +37,16 @@ func (r *VideoRepo) GetVideos(offset int,limit int) ([]models.Video, error, int)
 	var count int
 	err :=r.Db.Offset(offset).Limit(limit).Find(&Videos).Error
 	r.Db.Model(&video).Count(&count)
+	return Videos, err, count
+}
+
+// GetVideosByTitle ...
+func (r *VideoRepo) GetVideosByTitle(title string, offset int,limit int) ([]models.Video, error, int){
+	Videos := []models.Video{}
+	video := models.Video{}
+	var count int
+	err :=r.Db.Where("UPPER(title) LIKE ? ","%"+strings.ToUpper(title)+"%" ).Offset(offset).Limit(limit).Find(&Videos).Error
+	r.Db.Model(&video).Where("UPPER(title) LIKE ? ","%"+strings.ToUpper(title)+"%" ).Count(&count)
 	return Videos, err, count
 }
 
