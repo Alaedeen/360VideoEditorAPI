@@ -19,22 +19,29 @@ type VideoHandler struct {
 func (h *VideoHandler) GetVideos(w http.ResponseWriter, r *http.Request)  {
 	w.Header().Set("Content-Type", "application/json")
 	var response models.Response
+	var responseWithCount models.ResponseWithCount
 	offset,err0 := strconv.Atoi(r.URL.Query()["offset"][0])
 	if err0 != nil {
 		responseFormatter(500,"INTERNAL SERVER ERROR",err0.Error(),&response)
-		json.NewEncoder(w).Encode(response)
+		responseWithCount.Response=response
+		responseWithCount.Count=0
+		json.NewEncoder(w).Encode(responseWithCount)
 		return
 	}
 	limit , err:= strconv.Atoi(r.URL.Query()["limit"][0])
 	if err != nil {
 		responseFormatter(500,"INTERNAL SERVER ERROR",err.Error(),&response)
-		json.NewEncoder(w).Encode(response)
+		responseWithCount.Response=response
+		responseWithCount.Count=0
+		json.NewEncoder(w).Encode(responseWithCount)
 		return
 	}
-	result,err1 := h.Repo.GetVideos(offset,limit)
+	result,err1,count := h.Repo.GetVideos(offset,limit)
 	if err1 !=nil {
 		responseFormatter(500,"INTERNAL SERVER ERROR",err1.Error(),&response)
-		json.NewEncoder(w).Encode(response)
+		responseWithCount.Response=response
+		responseWithCount.Count=0
+		json.NewEncoder(w).Encode(responseWithCount)
 		return
 	}
 
@@ -46,7 +53,9 @@ func (h *VideoHandler) GetVideos(w http.ResponseWriter, r *http.Request)  {
 		videos= append(videos,video)
 	} 
 	responseFormatter(200,"OK",videos,&response)
-	json.NewEncoder(w).Encode(response)
+	responseWithCount.Response=response
+	responseWithCount.Count=count
+	json.NewEncoder(w).Encode(responseWithCount)
 }
 
 // GetVideo ...
