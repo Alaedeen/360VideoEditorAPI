@@ -342,16 +342,21 @@ func (h *UserHandler) UpdateUser(w http.ResponseWriter, r *http.Request)  {
 func (h *UserHandler) GetUserVideos(w http.ResponseWriter, r *http.Request)  {
 	w.Header().Set("Content-Type", "application/json")
 	var response models.Response
+	var responseWithCount models.ResponseWithCount
 	offset,err0 := strconv.Atoi(r.URL.Query()["offset"][0])
 	if err0 != nil {
 		responseFormatter(500,"INTERNAL SERVER ERROR",err0.Error(),&response)
-		json.NewEncoder(w).Encode(response)
+		responseWithCount.Response=response
+		responseWithCount.Count=0
+		json.NewEncoder(w).Encode(responseWithCount)
 		return
 	}
 	limit , err:= strconv.Atoi(r.URL.Query()["limit"][0])
 	if err != nil {
 		responseFormatter(500,"INTERNAL SERVER ERROR",err.Error(),&response)
-		json.NewEncoder(w).Encode(response)
+		responseWithCount.Response=response
+		responseWithCount.Count=0
+		json.NewEncoder(w).Encode(responseWithCount)
 		return
 	}
 	params := r.URL.Query()["id"]
@@ -359,14 +364,18 @@ func (h *UserHandler) GetUserVideos(w http.ResponseWriter, r *http.Request)  {
 	id,err2 := strconv.Atoi(params[0])//error handling
 	if err2 != nil {
 		responseFormatter(500,"INTERNAL SERVER ERROR",err2.Error(),&response)
-		json.NewEncoder(w).Encode(response)
+		responseWithCount.Response=response
+		responseWithCount.Count=0
+		json.NewEncoder(w).Encode(responseWithCount)
 		return
 	}
 	User.ID = uint(id)
-	result,err1 := h.Repo.GetUserVideos(User,offset,limit)
+	result,count,err1 := h.Repo.GetUserVideos(User,offset,limit)
 	if err1 !=nil {
 		responseFormatter(404,"NOT FOUND",err1.Error(),&response)
-		json.NewEncoder(w).Encode(response)
+		responseWithCount.Response=response
+		responseWithCount.Count=0
+		json.NewEncoder(w).Encode(responseWithCount)
 		return
 	}
 
@@ -378,7 +387,9 @@ func (h *UserHandler) GetUserVideos(w http.ResponseWriter, r *http.Request)  {
 		videos= append(videos,video)
 	} 
 	responseFormatter(200,"OK",videos,&response)
-	json.NewEncoder(w).Encode(response)
+	responseWithCount.Response=response
+	responseWithCount.Count=count
+	json.NewEncoder(w).Encode(responseWithCount)
 }
 
 // AddCommentsLikes ...

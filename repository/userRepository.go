@@ -17,7 +17,7 @@ type UserRepository interface {
 	CreateUser( u models.User) (models.User, error)
 	DeleteUser(id uint)(error)
 	UpdateUser(m map[string]interface {},id uint)(error)
-	GetUserVideos(u models.User, offset int,limit int) ([]models.Video, error)
+	GetUserVideos(u models.User, offset int,limit int) ([]models.Video, int, error)
 	GetUserPictures(u models.User, offset int,limit int) ([]models.Picture, error)
 	GetUserProjectVideos(u models.User, offset int,limit int) ([]models.Video2D, error)
 	AddCommentsLikes( c models.CommentsLikes) (error)
@@ -190,11 +190,14 @@ func (r *UserRepo) UpdateUser(m map[string]interface {},id uint)(error){
 }
 
 // GetUserVideos ...
-func (r *UserRepo) GetUserVideos(u models.User,offset int,limit int)([]models.Video, error){
+func (r *UserRepo) GetUserVideos(u models.User,offset int,limit int)([]models.Video, int, error){
 	user := u
 	videos := []models.Video{}
+	video:= models.Video{}
+	var count int
 	err:=r.Db.Model(&user).Offset(offset).Limit(limit).Related(&videos).Error
-	return videos,err
+	r.Db.Model(&video).Where("user_id = ? ",user.ID ).Count(&count)
+	return videos,count,err
 }
 
 // GetUserPictures ...
