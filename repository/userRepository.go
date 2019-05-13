@@ -123,6 +123,13 @@ func (r *UserRepo) GetUserBy(keys []string, values []interface{}) (models.User, 
 	var m map[string]interface{}
 	var password string
 	m = make(map[string]interface{})
+	subscriptions := []models.Subscriptions{}
+	videosLikes := []models.VideosLikes{}
+	videosDislikes := []models.VideosDislikes{}
+	commentsLikes := []models.CommentsLikes{}
+	commentsDislikes := []models.CommentsDislikes{}
+	repliesLikes := []models.RepliesLikes{}
+	repliesDislikes := []models.RepliesDislikes{}
 	for index,value := range keys{
 		if value=="password" {
 			crypt := sha1.New()
@@ -135,6 +142,21 @@ func (r *UserRepo) GetUserBy(keys []string, values []interface{}) (models.User, 
 		
 	}
 	err := r.Db.Where(m).Find(&User).Error
+	r.Db.Model(&User).Related(&subscriptions)
+	r.Db.Model(&User).Related(&videosLikes)
+	r.Db.Model(&User).Related(&videosDislikes)
+	r.Db.Model(&User).Related(&commentsLikes)
+	r.Db.Model(&User).Related(&commentsDislikes)
+	r.Db.Model(&User).Related(&repliesLikes)
+	r.Db.Model(&User).Related(&repliesDislikes)
+	User.Subscriptions=subscriptions
+	User.VideosLikes=videosLikes
+	User.VideosDislikes=videosDislikes
+	User.CommentsLikes=commentsLikes
+	User.CommentsDislikes=commentsDislikes
+	User.RepliesLikes=repliesLikes
+	User.RepliesDislikes=repliesDislikes
+
 	return User,err
 }
 
