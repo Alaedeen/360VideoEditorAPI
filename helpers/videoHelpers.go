@@ -14,8 +14,8 @@ func replyResponseFormatter(result models.Reply, reply *models.ReplyResponse)  {
 	reply.NameUser=result.NameUser
 	reply.ProfilePic=result.ProfilePic
 	reply.Text=result.Text
-	reply.Likes=result.Likes
-	reply.Dislikes=result.Dislikes
+	reply.Likes=*result.Likes
+	reply.Dislikes=*result.Dislikes
 }
 func commentResponseFormatter(result models.Comment, comment *models.CommentResponse)  {
 	comment.ID=result.ID
@@ -27,8 +27,8 @@ func commentResponseFormatter(result models.Comment, comment *models.CommentResp
 	comment.NameUser=result.NameUser
 	comment.ProfilePic=result.ProfilePic
 	comment.Text=result.Text
-	comment.Likes=result.Likes
-	comment.Dislikes=result.Dislikes
+	comment.Likes=*result.Likes
+	comment.Dislikes=*result.Dislikes
 	var reply models.ReplyResponse
 	comment.Replies= comment.Replies[:0]
 	if len(result.Replies)==0 {
@@ -48,13 +48,13 @@ func VideoResponseFormatter(result models.Video) models.VideoResponse {
 	video.UserID=result.UserID
 	video.Title=result.Title
 	video.UploadDate.Day=result.UploadDay
-	video.UploadDate.Month=result.UploadMonth
+	video.UploadDate.Month=result.UploadMonth 
 	video.UploadDate.Year=result.UploadYear
 	video.Thumbnail=result.Thumbnail
 	video.Src=result.Src
 	video.AFrame=result.AFrame
-	video.Likes=result.Likes
-	video.Dislikes=result.Dislikes
+	video.Likes=*result.Likes
+	video.Dislikes=*result.Dislikes
 	video.Views=result.Views
 	// var comment models.CommentResponse
 	if result.Comments!=nil {
