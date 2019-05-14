@@ -324,11 +324,11 @@ func (r *UserRepo)AddVideosLikes( c models.VideosLikes) (error){
 // RemoveVideosLikes ...
 func (r *UserRepo) RemoveVideosLikes(id int)(error){
 	like := models.VideosLikes{}
-	err := r.Db.First(&like,id).Error
+	like.VideoID = id
+	err := r.Db.First(&like).Error
 	if err != nil {
 		return err
 	}
-	like.VideoID = id
 	err =r.Db.Unscoped().Delete(&like).Error
 	return err
 }
