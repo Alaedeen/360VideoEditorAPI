@@ -57,7 +57,7 @@ func (r *VideoRepo) GetVideo(id uint ) (models.Video, error){
 	var replies []models.Reply
 	
 	err := r.Db.First(&Video,id).Error
-	r.Db.Model(&Video).Related(&comments)
+	r.Db.Model(&Video).Order("id desc").Related(&comments)
 	
 	Video.Comments=comments
 	for index := 0; index < len(comments); index++ {
