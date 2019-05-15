@@ -36,7 +36,7 @@ type UserRepository interface {
 	RemoveVideosDislikes(idVideo int,idUser int)(error)
 
 	AddSubscriptions( c models.Subscriptions) (error)
-	RemoveSubscriptions(id int)(error)
+	RemoveSubscriptions(idUser int,idSub int)(error)
 }
 
 // UserRepo ...
@@ -362,13 +362,13 @@ func (r *UserRepo)AddSubscriptions( c models.Subscriptions) (error){
 }
 
 // RemoveSubscriptions ...
-func (r *UserRepo) RemoveSubscriptions(id int)(error){
+func (r *UserRepo) RemoveSubscriptions(idUser int,idSub int)(error){
 	Subscription := models.Subscriptions{}
-	err := r.Db.First(&Subscription,id).Error
+	Subscription.IDSubscribed = idSub
+	err := r.Db.First(&Subscription).Error
 	if err != nil {
 		return err
 	}
-	Subscription.IDSubscribed = id
-	err =r.Db.Unscoped().Delete(&Subscription).Error
+	err =r.Db.Unscoped().Where("user_id = ? AND id_subscribed = ?", idUser,idSub).Delete(&models.Subscriptions{}).Error
 	return err
 }

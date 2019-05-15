@@ -693,16 +693,22 @@ func (h *UserHandler) AddSubscriptions(w http.ResponseWriter, r *http.Request)  
 // RemoveSubscriptions ...
 func (h *UserHandler) RemoveSubscriptions(w http.ResponseWriter, r *http.Request)  {
 	w.Header().Set("Content-Type", "application/json")
-	params := r.URL.Query()["id"]
+	param1 := r.URL.Query()["idSub"]
+	param2 := r.URL.Query()["idUser"]
 	var response models.Response
-	id, err := strconv.Atoi(params[0])
-
+	idSub, err := strconv.Atoi(param1[0])
 	if err != nil {
 		responseFormatter(500,"INTERNAL SERVER ERROR",err.Error(),&response)
 		json.NewEncoder(w).Encode(response)
 		return
 	}
-	err1 := h.Repo.RemoveSubscriptions(id)
+	idUser, err := strconv.Atoi(param2[0])
+	if err != nil {
+		responseFormatter(500,"INTERNAL SERVER ERROR",err.Error(),&response)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+	err1 := h.Repo.RemoveSubscriptions(idUser, idSub)
 	if err1!=nil {
 		responseFormatter(404,"NOT FOUND",err1.Error(),&response)
 		json.NewEncoder(w).Encode(response)
