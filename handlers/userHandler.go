@@ -593,16 +593,22 @@ func (h *UserHandler) AddVideosLikes(w http.ResponseWriter, r *http.Request)  {
 // RemoveVideosLikes ...
 func (h *UserHandler) RemoveVideosLikes(w http.ResponseWriter, r *http.Request)  {
 	w.Header().Set("Content-Type", "application/json")
-	params := r.URL.Query()["id"]
+	param1 := r.URL.Query()["idVideo"]
+	param2 := r.URL.Query()["idUser"]
 	var response models.Response
-	id, err := strconv.Atoi(params[0])
-
+	idVideo, err := strconv.Atoi(param1[0])
 	if err != nil {
 		responseFormatter(500,"INTERNAL SERVER ERROR",err.Error(),&response)
 		json.NewEncoder(w).Encode(response)
 		return
 	}
-	err1 := h.Repo.RemoveVideosLikes(id)
+	idUser, err := strconv.Atoi(param2[0])
+	if err != nil {
+		responseFormatter(500,"INTERNAL SERVER ERROR",err.Error(),&response)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+	err1 := h.Repo.RemoveVideosLikes(idVideo,idUser) 
 	if err1!=nil {
 		responseFormatter(404,"NOT FOUND",err1.Error(),&response)
 		json.NewEncoder(w).Encode(response)
@@ -637,16 +643,22 @@ func (h *UserHandler) AddVideosDislikes(w http.ResponseWriter, r *http.Request) 
 // RemoveVideosDislikes ...
 func (h *UserHandler) RemoveVideosDislikes(w http.ResponseWriter, r *http.Request)  {
 	w.Header().Set("Content-Type", "application/json")
-	params := r.URL.Query()["id"]
+	param1 := r.URL.Query()["idVideo"]
+	param2 := r.URL.Query()["idUser"]
 	var response models.Response
-	id, err := strconv.Atoi(params[0])
-
+	idVideo, err := strconv.Atoi(param1[0])
 	if err != nil {
 		responseFormatter(500,"INTERNAL SERVER ERROR",err.Error(),&response)
 		json.NewEncoder(w).Encode(response)
 		return
 	}
-	err1 := h.Repo.RemoveVideosDislikes(id)
+	idUser, err := strconv.Atoi(param2[0])
+	if err != nil {
+		responseFormatter(500,"INTERNAL SERVER ERROR",err.Error(),&response)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+	err1 := h.Repo.RemoveVideosDislikes(idVideo,idUser)
 	if err1!=nil {
 		responseFormatter(404,"NOT FOUND",err1.Error(),&response)
 		json.NewEncoder(w).Encode(response)
