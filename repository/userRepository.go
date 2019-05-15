@@ -330,7 +330,7 @@ func (r *UserRepo) RemoveVideosLikes(idVideo int,idUser int)(error){
 	if err != nil {
 		return err
 	}
-	err =r.Db.Unscoped().Delete(&like).Error
+	err =r.Db.Unscoped().Where("user_id = ? AND video_id = ?", idUser,idVideo).Delete(&models.VideosLikes{}).Error
 	return err
 }
 
@@ -350,7 +350,7 @@ func (r *UserRepo) RemoveVideosDislikes(idVideo int,idUser int)(error){
 	if err != nil {
 		return err
 	}
-	err =r.Db.Unscoped().Delete(&dislike).Error
+	err =r.Db.Unscoped().Where("user_id = ? AND video_id = ?", idUser,idVideo).Delete(&models.VideosDislikes{}).Error
 	return err
 }
 
