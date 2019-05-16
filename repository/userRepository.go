@@ -21,14 +21,14 @@ type UserRepository interface {
 	GetUserPictures(u models.User, offset int,limit int) ([]models.Picture, error)
 	GetUserProjectVideos(u models.User, offset int,limit int) ([]models.Video2D, error)
 	AddCommentsLikes( c models.CommentsLikes) (error)
-	RemoveCommentsLikes(id int)(error)
+	RemoveCommentsLikes(idUser int,idVideo int,idComment int)(error)
 	AddCommentsDislikes( c models.CommentsDislikes) (error)
-	RemoveCommentsDislikes(id int)(error)
+	RemoveCommentsDislikes(idUser int,idVideo int,idComment int)(error)
 
 	AddRepliesLikes( c models.RepliesLikes) (error)
-	RemoveRepliesLikes(id int)(error)
+	RemoveRepliesLikes(idUser int,idVideo int,idComment int, idReply int)(error)
 	AddRepliesDislikes( c models.RepliesDislikes) (error)
-	RemoveRepliesDislikes(id int)(error)
+	RemoveRepliesDislikes(idUser int,idVideo int,idComment int, idReply int)(error)
 
 	AddVideosLikes( c models.VideosLikes) (error)
 	RemoveVideosLikes(idVideo int,idUser int)(error)
@@ -246,14 +246,14 @@ func (r *UserRepo)AddCommentsLikes( c models.CommentsLikes) (error){
 }
 
 // RemoveCommentsLikes ...
-func (r *UserRepo) RemoveCommentsLikes(id int)(error){
+func (r *UserRepo) RemoveCommentsLikes(idUser int,idVideo int,idComment int)(error){
 	like := models.CommentsLikes{}
-	err := r.Db.First(&like,id).Error
+	like.CommentID = idComment
+	err := r.Db.First(&like).Error
 	if err != nil {
 		return err
 	}
-	like.CommentID = id
-	err =r.Db.Unscoped().Delete(&like).Error
+	err =r.Db.Unscoped().Where("user_id = ? AND video_id = ? AND comment_id = ?", idUser,idVideo,idComment).Delete(&models.CommentsLikes{}).Error
 	return err
 }
 
@@ -265,14 +265,14 @@ func (r *UserRepo)AddCommentsDislikes( c models.CommentsDislikes) (error){
 }
 
 // RemoveCommentsDislikes ...
-func (r *UserRepo) RemoveCommentsDislikes(id int)(error){
+func (r *UserRepo) RemoveCommentsDislikes(idUser int,idVideo int,idComment int)(error){
 	dislike := models.CommentsDislikes{}
-	err := r.Db.First(&dislike,id).Error
+	dislike.CommentID = idComment
+	err := r.Db.First(&dislike).Error
 	if err != nil {
 		return err
 	}
-	dislike.CommentID = id
-	err =r.Db.Unscoped().Delete(&dislike).Error
+	err =r.Db.Unscoped().Where("user_id = ? AND video_id = ? AND comment_id = ?", idUser,idVideo,idComment).Delete(&models.CommentsDislikes{}).Error
 	return err
 }
 
@@ -284,14 +284,14 @@ func (r *UserRepo)AddRepliesLikes( c models.RepliesLikes) (error){
 }
 
 // RemoveRepliesLikes ...
-func (r *UserRepo) RemoveRepliesLikes(id int)(error){
+func (r *UserRepo) RemoveRepliesLikes(idUser int,idVideo int,idComment int, idReply int)(error){
 	like := models.RepliesLikes{}
-	err := r.Db.First(&like,id).Error
+	like.ReplyID = idReply
+	err := r.Db.First(&like).Error
 	if err != nil {
 		return err
 	}
-	like.ReplyID = id
-	err =r.Db.Unscoped().Delete(&like).Error
+	err =r.Db.Unscoped().Where("user_id = ? AND video_id = ? AND comment_id = ? AND reply_id = ?", idUser,idVideo,idComment,idReply).Delete(&models.RepliesLikes{}).Error
 	return err
 }
 
@@ -303,14 +303,14 @@ func (r *UserRepo)AddRepliesDislikes( c models.RepliesDislikes) (error){
 }
 
 // RemoveRepliesDislikes ...
-func (r *UserRepo) RemoveRepliesDislikes(id int)(error){
+func (r *UserRepo) RemoveRepliesDislikes(idUser int,idVideo int,idComment int, idReply int)(error){
 	dislike := models.RepliesDislikes{}
-	err := r.Db.First(&dislike,id).Error
+	dislike.ReplyID = idReply
+	err := r.Db.First(&dislike).Error
 	if err != nil {
 		return err
 	}
-	dislike.ReplyID = id
-	err =r.Db.Unscoped().Delete(&dislike).Error
+	err =r.Db.Unscoped().Where("user_id = ? AND video_id = ? AND comment_id = ? AND reply_id = ?", idUser,idVideo,idComment,idReply).Delete(&models.RepliesDislikes{}).Error
 	return err
 }
 

@@ -283,13 +283,13 @@ func (h *VideoHandler) AddReply(w http.ResponseWriter, r *http.Request)  {
 		json.NewEncoder(w).Encode(response)
 		return
 	}
-	_, err1:= h.Repo.AddReply(Reply)
+	rep, err1:= h.Repo.AddReply(Reply)
 	if err1!=nil{
 		responseFormatter(500,"INTERNAL SERVER ERROR",err1.Error(),&response)
 		json.NewEncoder(w).Encode(response)
 		return
 	}
-	responseFormatter(201,"CREATED","Reply Added",&response)
+	responseFormatter(201,"CREATED",rep.ID,&response)
 	json.NewEncoder(w).Encode(response)
  
 }
