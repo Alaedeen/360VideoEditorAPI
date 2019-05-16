@@ -61,7 +61,7 @@ func (r *VideoRepo) GetVideo(id uint ) (models.Video, error){
 	Video.Comments=comments
 	for index := 0; index < len(comments); index++ {
 		replies = replies[:0]
-		r.Db.Model(&comments[index]).Related(&replies)
+		r.Db.Model(&comments[index]).Order("id desc").Related(&replies)
 		Video.Comments[index].Replies=replies
 	}
 	
