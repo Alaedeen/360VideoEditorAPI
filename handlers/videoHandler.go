@@ -209,13 +209,14 @@ func (h *VideoHandler) AddComment(w http.ResponseWriter, r *http.Request)  {
 		json.NewEncoder(w).Encode(response)
 		return
 	}
-	_, err1:= h.Repo.AddComment(Comment)
+	comm, err1:= h.Repo.AddComment(Comment)
 	if err1!=nil{
 		responseFormatter(500,"INTERNAL SERVER ERROR",err1.Error(),&response)
 		json.NewEncoder(w).Encode(response)
 		return
 	}
-	responseFormatter(201,"CREATED","Comment Added",&response)
+
+	responseFormatter(201,"CREATED",comm.ID,&response)
 	json.NewEncoder(w).Encode(response)
  
 }

@@ -2,7 +2,6 @@ package repository
 
 import (
 	"strings"
-	// "fmt"
 	"github.com/jinzhu/gorm"
 	models "github.com/Alaedeen/360VideoEditorAPI/models"
 )
