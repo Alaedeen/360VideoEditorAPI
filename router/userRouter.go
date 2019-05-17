@@ -43,4 +43,6 @@ func (r *UserRouterHandler) HandleFunctions() {
 
 	r.Router.Handle("/api/v1/subscriptions", helpers.IsAuthorized(r.Handler.AddSubscriptions)).Methods("POST")
 	r.Router.Handle("/api/v1/subscriptions", helpers.IsAuthorized(r.Handler.RemoveSubscriptions)).Methods("DELETE")
+
+	r.Router.HandleFunc("/api/v1/user/reset_password", r.Handler.ResetPassword).Methods("PUT")
 }

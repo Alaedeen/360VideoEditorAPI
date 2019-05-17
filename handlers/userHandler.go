@@ -9,6 +9,8 @@ import (
 	models "github.com/Alaedeen/360VideoEditorAPI/models"
 	"github.com/Alaedeen/360VideoEditorAPI/repository"
 	"crypto/sha1"
+	"gopkg.in/gomail.v2"
+	"github.com/sethvargo/go-password/password"
 )
 
 // UserHandler ...
@@ -851,5 +853,55 @@ func (h *UserHandler) GetUserProjectVideos(w http.ResponseWriter, r *http.Reques
 		return
 	}
 	responseFormatter(200,"OK",result,&response)
+	json.NewEncoder(w).Encode(response)
+}
+
+// ResetPassword ...
+func (h *UserHandler) ResetPassword(w http.ResponseWriter, r *http.Request)  {
+	w.Header().Set("Content-Type", "application/json")
+	var response models.Response
+	
+	email := r.URL.Query()["email"][0]
+	var keys []string
+	keys = append(keys,"email")
+	var values []interface{}
+	values = append(values,email)
+	user,err:= h.Repo.GetUserBy(keys,values)
+	if err != nil {
+		responseFormatter(404,"NOT FOUND",err.Error(),&response)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+	res, err := password.Generate(10, 2, 2, false, false)
+	if err != nil {
+		responseFormatter(200,"OK",err,&response)
+		json.NewEncoder(w).Encode(response)
+	}
+	var m1 map[string]interface{}
+	m1 = make(map[string]interface{})
+	crypt := sha1.New()
+	crypt.Write([]byte(res))
+	m1["password"]=crypt.Sum(nil)
+	err2 := h.Repo.UpdateUser(m1,user.ID)
+	if err2 !=nil {
+		responseFormatter(500,"INTERNAL SERVER ERROR",err2.Error(),&response)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+
+	m := gomail.NewMessage()
+	m.SetHeader("From", "alaedeen.stark7@gmail.com")
+	m.SetHeader("To", email)
+	m.SetHeader("Subject", "Password Reset!")
+	m.SetBody("text/html", "Hello <b>"+user.Name+"</b>,<br>your new password is : " + res)
+
+	d := gomail.NewDialer("smtp.gmail.com", 587, "alaedeen.stark7@gmail.com", "Ala1995Stark")
+
+	// Send the email to Bob, Cora and Dan.
+	if err := d.DialAndSend(m); err != nil {
+		responseFormatter(500,"INTERNAL SERVER ERROR",err,&response)
+		json.NewEncoder(w).Encode(response)
+	}
+	responseFormatter(200,"OK","PASSWORD UPDATED",&response)
 	json.NewEncoder(w).Encode(response)
 }
