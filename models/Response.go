@@ -33,28 +33,28 @@ type UserResponse struct {
 
 // CommentsLikesResponse struct
 type CommentsLikesResponse struct {
-	VideoID		int `json:"idVideo"`
-	CommentID	int `json:"idComment"`
+	VideoID		int `json:"videoId"`
+	CommentID	int `json:"commentId"`
 }
 
 // CommentsDislikesResponse struct
 type CommentsDislikesResponse struct {
-	VideoID		int `json:"idVideo"`
-	CommentID	int `json:"idComment"`
+	VideoID		int `json:"videoId"`
+	CommentID	int `json:"commentId"`
 }
 
 // RepliesLikesResponse struct
 type RepliesLikesResponse struct {
-	VideoID		int `json:"idVideo"`
-	CommentID	int `json:"idComment"`
-	ReplyID 	int `json:"idReply"`
+	VideoID		int `json:"videoId"`
+	CommentID	int `json:"commentId"`
+	ReplyID 	int `json:"replyId"`
 }
 
 // RepliesDislikesResponse struct
 type RepliesDislikesResponse struct {
-	VideoID		int `json:"idVideo"`
-	CommentID	int `json:"idComment"`
-	ReplyID 	int `json:"idReply"`
+	VideoID		int `json:"videoId"`
+	CommentID	int `json:"commentId"`
+	ReplyID 	int `json:"replyId"`
 }
 
 // VideoResponse Struct
