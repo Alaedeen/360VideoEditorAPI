@@ -893,7 +893,14 @@ func (h *UserHandler) ResetPassword(w http.ResponseWriter, r *http.Request)  {
 	m.SetHeader("From", "alaedeen.stark7@gmail.com")
 	m.SetHeader("To", email)
 	m.SetHeader("Subject", "Password Reset!")
-	m.SetBody("text/html", "Hello <b>"+user.Name+"</b>,<br>your new password is : " + res)
+	m.SetBody("text/html", `<div style="text-align: center">
+								<h1 >Hello</h1>
+								<h3>`+user.Name+`</h3>
+								<p>your new password is : <b style="color : red">`+res+`</b> </p>
+								<h4>Thank you for using our app!</h4>
+								<p>Yours sincerely.</p>
+								<p>360 video editor team.</p>
+							</div>`)
 
 	d := gomail.NewDialer("smtp.gmail.com", 587, "alaedeen.stark7@gmail.com", "Ala1995Stark")
 
