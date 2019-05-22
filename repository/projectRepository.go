@@ -7,7 +7,7 @@ import (
 
 // ProjectRepository ...
 type ProjectRepository interface {
-	GetProjects(id uint, offset int,limit int) ([]models.Project, error)
+	GetProjects(id uint, offset int,limit int) ([]models.Project, int, error)
 	GetProject(id uint) (models.Project, error)
 	CreateProject( p models.Project) (models.Project, error)
 	UpdateProject(p models.Project,id uint)(error)
@@ -32,12 +32,15 @@ type ProjectRepo struct {
 }
 
 // GetProjects ...
-func (r *ProjectRepo) GetProjects(id uint, offset int,limit int) ([]models.Project, error){
+func (r *ProjectRepo) GetProjects(id uint, offset int,limit int) ([]models.Project, int, error){
 	user := models.User{}
 	user.ID=id
 	projects := []models.Project{}
+	project := models.Project{}
+	var count int
 	err:=r.Db.Model(&user).Offset(offset).Limit(limit).Related(&projects).Error
-	return projects,err
+	r.Db.Model(&project).Where("user_id = ? ",id ).Count(&count)
+	return projects,count,err
 }
 
 // GetProject ...
