@@ -11,5 +11,5 @@ type Video2D struct {
 	Src				string 	`json:"src"`
 	Type			string 	`json:"type"`
 	Thumbnail 		string	`json:"thumbnail"`
-	Ratio 			int		`json:"ratio"`
+	Ratio 			float64	`json:"ratio"`
 }

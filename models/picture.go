@@ -10,5 +10,5 @@ type Picture struct {
 	UserID			int 	`json:"userId"`
 	Src				string 	`json:"src"`
 	Type			string 	`json:"type"`
-	Ratio 			int		`json:"ratio"`
+	Ratio 			float64	`json:"ratio"`
 }

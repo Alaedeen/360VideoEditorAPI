@@ -519,7 +519,7 @@ func (h *ProjectHandler) AddPicture(w http.ResponseWriter, r *http.Request)  {
 		return
 	}
 	Picture.Type=r.Form["type"][0]
-	Picture.Ratio,err=strconv.Atoi(r.Form["ratio"][0])
+	Picture.Ratio,err=strconv.ParseFloat(r.Form["ratio"][0],64)
 	if err != nil {
 		responseFormatter(500,"INTERNAL SERVER ERROR",err.Error(),&response)
 		json.NewEncoder(w).Encode(response)
@@ -627,7 +627,7 @@ func (h *ProjectHandler) AddProjectVideo(w http.ResponseWriter, r *http.Request)
 		return
 	}
 	Video2D.Type=r.Form["type"][0]
-	Video2D.Ratio,err=strconv.Atoi(r.Form["ratio"][0])
+	Video2D.Ratio,err=strconv.ParseFloat(r.Form["ratio"][0],64)
 	if err != nil {
 		responseFormatter(500,"INTERNAL SERVER ERROR",err.Error(),&response)
 		json.NewEncoder(w).Encode(response)
