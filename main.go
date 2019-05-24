@@ -26,7 +26,7 @@ func main()  {
 		AllowedOrigins: []string{"http://localhost", "http://localhost:8082"},
 		AllowCredentials: true,
 		AllowedHeaders: []string{"Authorization","Content-Type"},
-		AllowedMethods: []string{"GET","POST","DELETE","PUT"},
+		AllowedMethods: []string{"GET","POST","DELETE","PUT","HEAD"},
 		// Enable Debugging for testing, consider disabling in production
 		Debug: true,
 	})
