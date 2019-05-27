@@ -122,40 +122,66 @@ type ProjectResponse struct {
 
 // Script struct
 type Script struct {
-	Aentity 		AEntity 		`json:"a-entity,omitempty"`
-	AvideoSphere 	AVideoSphere	`json:"a-videosphere,omitempty"`
+	Aentity 		[]Text 		`json:"texts"`
+	AvideoSphere 	[]Element		`json:"elements"`
 }
 
-// AEntity struct
-type AEntity struct {
-	Elements	[]AElement	`json:"a-text,omitempty"`
+// Text struct
+type Text struct {
+	TagName		*string		`json:"tagName,omitempty"`
+	Position	Coord		`json:"position,omitempty"`
+	Rotation	Coord		`json:"rotation,omitempty"`
+	ID			*string		`json:"id,omitempty"`
+	Scale		Coord		`json:"scale,omitempty"`
+	Class		*string		`json:"class,omitempty"`
+	Color		*string		`json:"color,omitempty"`
+	StartTime	*string		`json:"starttime,omitempty"`
+	EndTime		*string		`json:"endtime,omitempty"`
+	SRC			*string		`json:"src,omitempty"`
+	Width		*string		`json:"width,omitempty"`
+	Height		*string		`json:"height,omitempty"`
+	Font		*string		`json:"font,omitempty"`
+	// Text 		string		`json:"text,omitempty"`
+	Value		*string		`json:"value,omitempty"`
 }
 
-// AVideoSphere struct
-type AVideoSphere struct {
-	Elements []AElement	`json:"elements,omitempty"`
+// Element struct
+type Element struct {
+	TagName		*string		`json:"tagName,omitempty"`
+	Position	Coord		`json:"position,omitempty"`
+	Rotation	Coord		`json:"rotation,omitempty"`
+	ID			*string		`json:"id,omitempty"`
+	Scale		Coord		`json:"scale,omitempty"`
+	Class		*string		`json:"class,omitempty"`
+	Color		*string		`json:"color,omitempty"`
+	StartTime	*string		`json:"starttime,omitempty"`
+	EndTime		*string		`json:"endtime,omitempty"`
+	Toggle		*string		`json:"toggle-visibility,omitempty"`
+	Animation	AnimationProps	`json:"animation,omitempty"`
+	Rotate		*string		`json:"rotate,omitempty"`
+	SRC			*string		`json:"src,omitempty"`
+	Width		*string		`json:"width,omitempty"`
+	Height		*string		`json:"height,omitempty"`
+	Font		*string		`json:"font,omitempty"`
+	// Text 		string		`json:"text,omitempty"`
+	Value		*string		`json:"value,omitempty"`
 }
 
-// AElement struct
-type AElement struct {
-	TagName		string		`json:"tagName,omitempty"`
-	Position	string	`json:"position,omitempty"`
-	Rotation	string	`json:"rotation,omitempty"`
-	ID			string		`json:"id,omitempty"`
-	Scale		string	`json:"scale,omitempty"`
-	Class		string		`json:"class,omitempty"`
-	StartTime	string		`json:"starttime,omitempty"`
-	EndTime		string		`json:"endtime,omitempty"`
-	Toggle		string		`json:"toggle-visibility,omitempty"`
-	Animation	string		`json:"animation,omitempty"`
-	Rotate		string		`json:"rotate,omitempty"`
-	SRC			string		`json:"src,omitempty"`
-	Width		string		`json:"width,omitempty"`
-	Height		string		`json:"height,omitempty"`
-	Font		string		`json:"font,omitempty"`
-	Text 		string		`json:"text,omitempty"`
-	Value		string		`json:"value,omitempty"`
+// AnimationProps struct
+type AnimationProps struct {
+	Property	string	`json:"property,omitempty"`
+	To			string	`json:"to,omitempty"`
+	Loop		*bool	`json:"loop,omitempty"`
+	Dur			*int64	`json:"dur,omitempty"`
 }
+
+// Coord struct
+type Coord struct {
+	X	*float64	`json:"x,omitempty"`
+	Y	*float64	`json:"y,omitempty"`
+	Z	*float64	`json:"z,omitempty"`
+}
+
 
 // ResponseWithToken struct
 type ResponseWithToken struct {
