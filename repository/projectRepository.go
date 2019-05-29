@@ -50,13 +50,13 @@ func (r *ProjectRepo) GetProject(id uint) (models.Project, error){
 	var tagsList []models.AddedTags
 	var tagElements []models.TagElements
 	err:= r.Db.First(&project,id).Error
-	r.Db.Model(&project).Related(&shapesList)
-	r.Db.Model(&project).Related(&tagsList)
+	r.Db.Model(&project).Order("id desc").Related(&shapesList)
+	r.Db.Model(&project).Order("id desc").Related(&tagsList)
 	project.ShapesList=shapesList
 	project.TagsList=tagsList
 	for index, tag := range project.TagsList {
 		tagElements= tagElements[:0]
-		r.Db.Model(&tag).Related(&tagElements)
+		r.Db.Model(&tag).Order("id desc").Related(&tagElements)
 		project.TagsList[index].Shapes=tagElements
 	}
 	return project,err
