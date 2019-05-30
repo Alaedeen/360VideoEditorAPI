@@ -408,7 +408,7 @@ func (h *ProjectHandler) AddTag(w http.ResponseWriter, r *http.Request)  {
 		json.NewEncoder(w).Encode(response)
 		return
 	}
-	responseFormatter(201,"CREATED",result.IDTag+" ADDED",&response)
+	responseFormatter(201,"CREATED",result.ID,&response)
 	json.NewEncoder(w).Encode(response)
 }
 
