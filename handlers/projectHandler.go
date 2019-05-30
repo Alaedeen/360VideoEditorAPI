@@ -365,7 +365,7 @@ func (h *ProjectHandler) AddElement(w http.ResponseWriter, r *http.Request)  {
 		json.NewEncoder(w).Encode(response)
 		return
 	}
-	responseFormatter(201,"CREATED",result.Type+" ADDED",&response)
+	responseFormatter(201,"CREATED",result.ID,&response)
 	json.NewEncoder(w).Encode(response)
 }
 
@@ -451,7 +451,7 @@ func (h *ProjectHandler) AddTagElement(w http.ResponseWriter, r *http.Request)  
 		json.NewEncoder(w).Encode(response)
 		return
 	}
-	responseFormatter(201,"CREATED",result.Type+" ADDED",&response)
+	responseFormatter(201,"CREATED",result.ID,&response)
 	json.NewEncoder(w).Encode(response)
 }
 
