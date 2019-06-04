@@ -63,7 +63,7 @@ func main()  {
 					&models.Subscriptions{},&models.TagElements{},
 					&models.User{},&models.Video{},
 					&models.Video2D{},&models.VideosDislikes{},
-					&models.VideosLikes{},&models.Test{})
+					&models.VideosLikes{},&models.Test{},&models.UploadRequest{})
 
 	userRepo := repository.UserRepo{db}
 	userHandler := handlers.UserHandler{&userRepo}
