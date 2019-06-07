@@ -667,3 +667,38 @@ func (h *ProjectHandler) DeleteProjectVideo(w http.ResponseWriter, r *http.Reque
 	responseFormatter(200,"OK","VIDEO DELETED",&response)
 	json.NewEncoder(w).Encode(response)
 }
+
+// GetUploadRequests ...
+func (h *ProjectHandler) GetUploadRequests(w http.ResponseWriter, r *http.Request)  {
+	w.Header().Set("Content-Type", "application/json")
+	var response models.Response
+	var responseWithCount models.ResponseWithCount
+	offset,err0 := strconv.Atoi(r.URL.Query()["offset"][0])
+	if err0 != nil {
+		responseFormatter(500,"INTERNAL SERVER ERROR",err0.Error(),&response)
+		responseWithCount.Response=response
+		responseWithCount.Count=0
+		json.NewEncoder(w).Encode(responseWithCount)
+		return
+	}
+	limit , err:= strconv.Atoi(r.URL.Query()["limit"][0])
+	if err != nil {
+		responseFormatter(500,"INTERNAL SERVER ERROR",err.Error(),&response)
+		responseWithCount.Response=response
+		responseWithCount.Count=0
+		json.NewEncoder(w).Encode(responseWithCount)
+		return
+	}
+	result,count,err2 := h.Repo.GetUploadRequests(offset,limit) 
+	if err2 !=nil {
+		responseFormatter(500,"INTERNAL SERVER ERROR",err2.Error(),&response)
+		responseWithCount.Response=response
+		responseWithCount.Count=0
+		json.NewEncoder(w).Encode(responseWithCount)
+		return
+	}
+	responseFormatter(200,"OK",result,&response)
+	responseWithCount.Response=response
+	responseWithCount.Count=count
+	json.NewEncoder(w).Encode(responseWithCount)
+}
