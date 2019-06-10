@@ -55,7 +55,7 @@ func VideoResponseFormatter(result models.Video) models.VideoResponse {
 	video.AFrame=result.AFrame
 	video.Likes=*result.Likes
 	video.Dislikes=*result.Dislikes
-	video.Views=result.Views
+	video.Views=*result.Views
 	// var comment models.CommentResponse
 	if result.Comments!=nil {
 		rs := []models.CommentResponse{}

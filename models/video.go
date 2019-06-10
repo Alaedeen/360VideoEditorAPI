@@ -17,6 +17,6 @@ type Video struct {
 	AFrame 			string		`json:"aFrame"`
 	Likes 			*int		`json:"likes"`
 	Dislikes 		*int		`json:"dislikes"`
-	Views 			int			`json:"views"`
+	Views 			*int			`json:"views"`
 	Comments		[]Comment	`json:"comments"`
 }
