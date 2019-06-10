@@ -35,4 +35,5 @@ func (r *ProjectRouterHandler) HandleFunctions() {
 	r.Router.Handle("/api/v1/project/video", helpers.IsAuthorized(r.Handler.DeleteProjectVideo)).Methods("DELETE")
 
 	r.Router.Handle("/api/v1/uploadRequests", helpers.IsAuthorized(r.Handler.GetUploadRequests)).Methods("GET")
+	r.Router.Handle("/api/v1/uploadRequests", helpers.IsAuthorized(r.Handler.DeleteUploadRequest)).Methods("DELETE")
 }

@@ -702,3 +702,24 @@ func (h *ProjectHandler) GetUploadRequests(w http.ResponseWriter, r *http.Reques
 	responseWithCount.Count=count
 	json.NewEncoder(w).Encode(responseWithCount)
 }
+
+// DeleteUploadRequest ...
+func (h *ProjectHandler) DeleteUploadRequest(w http.ResponseWriter, r *http.Request)  {
+	w.Header().Set("Content-Type", "application/json")
+	var response models.Response
+	params := r.URL.Query() //Get params
+	id, err := strconv.Atoi(params["id"][0]) 
+	if err != nil {
+		responseFormatter(500,"INTERNAL SERVER ERROR",err.Error(),&response)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+	err1 := h.Repo.DeleteUploadRequest(uint(id))
+	if err1!=nil {
+		responseFormatter(404,"NOT FOUND",err1.Error(),&response)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+	responseFormatter(200,"OK","REQUEST DELETED",&response)
+	json.NewEncoder(w).Encode(response)
+}

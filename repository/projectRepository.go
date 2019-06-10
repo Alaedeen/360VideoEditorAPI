@@ -25,6 +25,7 @@ type ProjectRepository interface {
 	AddProjectVideo( e models.Video2D) (models.Video2D, error)
 	DeleteProjectVideo(id uint)(error)
 	GetUploadRequests( offset int,limit int) ([]models.UploadRequest, int, error)
+	DeleteUploadRequest(id uint)(error)
 }
 
 // ProjectRepo ...
@@ -216,4 +217,17 @@ func (r *ProjectRepo) GetUploadRequests(offset int,limit int) ([]models.UploadRe
 	r.Db.Find(&uploadRequests).Count(&count)
 	
 	return uploadRequests,count,err
+}
+
+// DeleteUploadRequest ...
+func (r *ProjectRepo) DeleteUploadRequest(id uint)(error){
+	uploadRequest := models.UploadRequest{}
+	err := r.Db.First(&uploadRequest,id).Error
+	if err != nil {
+		return err
+	}
+	
+	uploadRequest.ID=id
+	err =r.Db.Delete(&uploadRequest).Error
+	return err
 }
