@@ -26,6 +26,7 @@ type ProjectRepository interface {
 	DeleteProjectVideo(id uint)(error)
 	GetUploadRequests( offset int,limit int) ([]models.UploadRequest, int, error)
 	DeleteUploadRequest(id uint)(error)
+	AddUploadRequest(b models.UploadRequest) (models.UploadRequest, error)
 }
 
 // ProjectRepo ...
@@ -230,4 +231,11 @@ func (r *ProjectRepo) DeleteUploadRequest(id uint)(error){
 	uploadRequest.ID=id
 	err =r.Db.Delete(&uploadRequest).Error
 	return err
+}
+
+// AddUploadRequest ...
+func (r *ProjectRepo) AddUploadRequest(b models.UploadRequest) (models.UploadRequest, error){
+	UploadRequest :=b
+	err :=r.Db.Create(&UploadRequest).Error
+	return UploadRequest, err
 }

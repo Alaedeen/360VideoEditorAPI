@@ -723,3 +723,25 @@ func (h *ProjectHandler) DeleteUploadRequest(w http.ResponseWriter, r *http.Requ
 	responseFormatter(200,"OK","REQUEST DELETED",&response)
 	json.NewEncoder(w).Encode(response)
 }
+
+// AddUploadRequest ...
+func (h *ProjectHandler) AddUploadRequest(w http.ResponseWriter, r *http.Request)  {
+	w.Header().Set("Content-Type", "application/json")
+	var UploadRequest models.UploadRequest
+	var response models.Response
+	err:=json.NewDecoder(r.Body).Decode(&UploadRequest)
+	if err !=nil {
+		responseFormatter(400,"BAD REQUEST",err.Error(),&response)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+	result, err1:= h.Repo.AddUploadRequest(UploadRequest)
+	if err1!=nil{
+		responseFormatter(500,"INTERNAL SERVER ERROR",err1.Error(),&response)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+	responseFormatter(201,"CREATED",result.Title+" Added",&response)
+	json.NewEncoder(w).Encode(response)
+
+}

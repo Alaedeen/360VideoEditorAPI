@@ -36,4 +36,5 @@ func (r *ProjectRouterHandler) HandleFunctions() {
 
 	r.Router.Handle("/api/v1/uploadRequests", helpers.IsAuthorized(r.Handler.GetUploadRequests)).Methods("GET")
 	r.Router.Handle("/api/v1/uploadRequests", helpers.IsAuthorized(r.Handler.DeleteUploadRequest)).Methods("DELETE")
+	r.Router.Handle("/api/v1/uploadRequests", helpers.IsAuthorized(r.Handler.AddUploadRequest)).Methods("POST")
 }
