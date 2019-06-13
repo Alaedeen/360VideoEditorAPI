@@ -143,31 +143,31 @@ func (h *ProjectHandler) CreateProject(w http.ResponseWriter, r *http.Request)  
 	}
 	videoFile.Write(fileBytes)
 
-	//upload the video thumbnail
-	file1, handler1, err2 := r.FormFile("thumbnail")
-	var fileType1 string
-    if err2 != nil {
-        responseFormatter(400,"BAD REQUEST",err2.Error(),&response)
-		json.NewEncoder(w).Encode(response)
-		return
-	}
-	defer file1.Close()
-	fileType1 = handler1.Header["Content-Type"][0]
-	fileType1= fileType1[6:]
-	thumbnail, err := ioutil.TempFile("assets/project/videos/thumbnails", "thumbnail_*_"+dt+"." + fileType1)
-	if err != nil {
-		responseFormatter(500,"INTERNAL SERVER ERROR",err.Error(),&response)
-		json.NewEncoder(w).Encode(response)
-		return
-	}
-	defer thumbnail.Close()
-	fileBytes1, err0 := ioutil.ReadAll(file1)
-	if err0 != nil {
-		responseFormatter(500,"INTERNAL SERVER ERROR",err0.Error(),&response)
-		json.NewEncoder(w).Encode(response)
-		return
-	}
-	thumbnail.Write(fileBytes1)
+	// //upload the video thumbnail
+	// file1, handler1, err2 := r.FormFile("thumbnail")
+	// var fileType1 string
+    // if err2 != nil {
+    //     responseFormatter(400,"BAD REQUEST",err2.Error(),&response)
+	// 	json.NewEncoder(w).Encode(response)
+	// 	return
+	// }
+	// defer file1.Close()
+	// fileType1 = handler1.Header["Content-Type"][0]
+	// fileType1= fileType1[6:]
+	// thumbnail, err := ioutil.TempFile("assets/project/videos/thumbnails", "thumbnail_*_"+dt+"." + fileType1)
+	// if err != nil {
+	// 	responseFormatter(500,"INTERNAL SERVER ERROR",err.Error(),&response)
+	// 	json.NewEncoder(w).Encode(response)
+	// 	return
+	// }
+	// defer thumbnail.Close()
+	// fileBytes1, err0 := ioutil.ReadAll(file1)
+	// if err0 != nil {
+	// 	responseFormatter(500,"INTERNAL SERVER ERROR",err0.Error(),&response)
+	// 	json.NewEncoder(w).Encode(response)
+	// 	return
+	// }
+	// thumbnail.Write(fileBytes1)
 	
 
 	aFrame, err := os.Create("assets/project/videos/script/aframe_"+r.Form["userId"][0]+"_"+dt+".json")
@@ -187,7 +187,8 @@ func (h *ProjectHandler) CreateProject(w http.ResponseWriter, r *http.Request)  
 	Project.Title=r.Form["title"][0]
 	Project.AFrame="aframe_"+r.Form["userId"][0]+"_"+dt+".json"
 	Project.Video= videoFile.Name()[22:]	
-	Project.Thumbnail= thumbnail.Name()[33:]	
+	// Project.Thumbnail= thumbnail.Name()[33:]
+	Project.Thumbnail= "thumbnail.jpg"	
 	Project.Box=0
 	Project.Sphere=0
 	Project.Cone=0
