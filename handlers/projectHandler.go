@@ -526,7 +526,7 @@ func (h *ProjectHandler) AddPicture(w http.ResponseWriter, r *http.Request)  {
 		json.NewEncoder(w).Encode(response)
 		return
 	}
-	Picture.Src= pictureFile.Name()[31:]
+	Picture.Src= "http://localhost:8000/assets/project/projectPictures/" +  pictureFile.Name()[31:]
 
 	result,err1 := h.Repo.AddPicture(Picture)
 	if err1 != nil {
