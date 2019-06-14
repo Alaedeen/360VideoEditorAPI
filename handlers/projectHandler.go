@@ -595,31 +595,31 @@ func (h *ProjectHandler) AddProjectVideo(w http.ResponseWriter, r *http.Request)
 	}
 	videoFile.Write(fileBytes)
 
-	//upload the video thumbnail
-	file1, handler1, err2 := r.FormFile("thumbnail")
-	var fileType1 string
-    if err2 != nil {
-        responseFormatter(400,"BAD REQUEST",err2.Error(),&response)
-		json.NewEncoder(w).Encode(response)
-		return
-	}
-	defer file1.Close()
-	fileType1 = handler1.Header["Content-Type"][0]
-	fileType1= fileType1[6:]
-	thumbnail, err := ioutil.TempFile("assets/project/projectVideos/thumbnails", "projVidThumb_*_"+dt+"." + fileType1)
-	if err != nil {
-		responseFormatter(500,"INTERNAL SERVER ERROR",err.Error(),&response)
-		json.NewEncoder(w).Encode(response)
-		return
-	}
-	defer thumbnail.Close()
-	fileBytes1, err0 := ioutil.ReadAll(file1)
-	if err0 != nil {
-		responseFormatter(500,"INTERNAL SERVER ERROR",err0.Error(),&response)
-		json.NewEncoder(w).Encode(response)
-		return
-	}
-	thumbnail.Write(fileBytes1)
+	// //upload the video thumbnail
+	// file1, handler1, err2 := r.FormFile("thumbnail")
+	// var fileType1 string
+    // if err2 != nil {
+    //     responseFormatter(400,"BAD REQUEST",err2.Error(),&response)
+	// 	json.NewEncoder(w).Encode(response)
+	// 	return
+	// }
+	// defer file1.Close()
+	// fileType1 = handler1.Header["Content-Type"][0]
+	// fileType1= fileType1[6:]
+	// thumbnail, err := ioutil.TempFile("assets/project/projectVideos/thumbnails", "projVidThumb_*_"+dt+"." + fileType1)
+	// if err != nil {
+	// 	responseFormatter(500,"INTERNAL SERVER ERROR",err.Error(),&response)
+	// 	json.NewEncoder(w).Encode(response)
+	// 	return
+	// }
+	// defer thumbnail.Close()
+	// fileBytes1, err0 := ioutil.ReadAll(file1)
+	// if err0 != nil {
+	// 	responseFormatter(500,"INTERNAL SERVER ERROR",err0.Error(),&response)
+	// 	json.NewEncoder(w).Encode(response)
+	// 	return
+	// }
+	// thumbnail.Write(fileBytes1)
 
 	Video2D.UserID,err=strconv.Atoi(r.Form["userId"][0])
 	if err != nil {
@@ -634,9 +634,9 @@ func (h *ProjectHandler) AddProjectVideo(w http.ResponseWriter, r *http.Request)
 		json.NewEncoder(w).Encode(response)
 		return
 	}
-	Video2D.Src= videoFile.Name()[29:]
-	Video2D.Thumbnail= thumbnail.Name()[40:]
-
+	Video2D.Src= "http://localhost:8000/assets/project/projectVideos/"+videoFile.Name()[29:]
+	// Video2D.Thumbnail= thumbnail.Name()[40:]
+	Video2D.Thumbnail=  "http://localhost:8000/assets/project/projectVideos/thumbnails/thumbnail.png"
 	result,err1 := h.Repo.AddProjectVideo(Video2D)
 	if err1 != nil {
 		responseFormatter(500,"INTERNAL SERVER ERROR",err1.Error(),&response)
